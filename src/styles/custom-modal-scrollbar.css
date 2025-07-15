@@ -1,0 +1,16 @@
+/* Minimalist custom scrollbar for modal content */
+.custom-modal-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d1fae5 #fff;
+}
+.custom-modal-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  background: transparent;
+}
+.custom-modal-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1fae5;
+  border-radius: 6px;
+}
+.custom-modal-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}

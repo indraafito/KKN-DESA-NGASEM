@@ -1,0 +1,229 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 30 15% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 30 15% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 15% 15%;
+
+    --primary: 158 64% 52%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 28 25% 85%;
+    --secondary-foreground: 30 15% 15%;
+
+    --muted: 28 25% 85%;
+    --muted-foreground: 30 15% 46%;
+
+    --accent: 28 25% 85%;
+    --accent-foreground: 30 15% 15%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 28 25% 82%;
+    --input: 28 25% 82%;
+    --ring: 158 64% 52%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 30 15% 26%;
+    --sidebar-primary: 30 15% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 28 25% 85%;
+    --sidebar-accent-foreground: 30 15% 10%;
+    --sidebar-border: 28 25% 82%;
+    --sidebar-ring: 158 64% 52%;
+  }
+
+  .dark {
+    --background: 30 15% 15%;
+    --foreground: 0 0% 98%;
+    --card: 30 15% 15%;
+    --card-foreground: 0 0% 98%;
+    --popover: 30 15% 15%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 158 64% 52%;
+    --primary-foreground: 30 15% 15%;
+    --secondary: 30 15% 25%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 30 15% 25%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 30 15% 25%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 30 15% 25%;
+    --input: 30 15% 25%;
+    --ring: 158 64% 52%;
+    --sidebar-background: 30 15% 10%;
+    --sidebar-foreground: 28 25% 85%;
+    --sidebar-primary: 158 64% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 30 15% 20%;
+    --sidebar-accent-foreground: 28 25% 85%;
+    --sidebar-border: 30 15% 20%;
+    --sidebar-ring: 158 64% 52%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom animations and utilities */
+@layer utilities {
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out forwards;
+  }
+  
+  .animate-scale-in {
+    animation: scale-in 0.5s ease-out forwards;
+  }
+  
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out forwards;
+  }
+  
+  .animate-bounce-in {
+    animation: bounce-in 0.8s ease-out forwards;
+  }
+
+  .glassmorphism {
+    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  }
+
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-emerald-600 to-stone-600 bg-clip-text text-transparent;
+  }
+
+  .section-padding {
+    @apply py-16 px-4 sm:py-20 sm:px-6 lg:py-24 lg:px-8;
+  }
+
+  .container-responsive {
+    @apply container mx-auto max-w-7xl;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive text sizes */
+@layer utilities {
+  .text-responsive-xs {
+    @apply text-sm sm:text-base;
+  }
+  
+  .text-responsive-sm {
+    @apply text-base sm:text-lg;
+  }
+  
+  .text-responsive-md {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+  
+  .text-responsive-lg {
+    @apply text-xl sm:text-2xl lg:text-3xl xl:text-4xl;
+  }
+  
+  .text-responsive-xl {
+    @apply text-2xl sm:text-3xl lg:text-4xl xl:text-5xl;
+  }
+  
+  .text-responsive-2xl {
+    @apply text-3xl sm:text-4xl lg:text-5xl xl:text-6xl;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Loading animation */
+.loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
