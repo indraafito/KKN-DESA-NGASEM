@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,18 +7,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 import { Tables } from '@/integrations/supabase/types';
+import { useCreateFacility, useUpdateFacility } from "@/hooks/useFacilities"; // pastikan path benar
 
 type Facility = Tables<'facilities'>;
 
 interface FacilityFormProps {
   facility?: Facility;
-  onSubmit: (data: any) => Promise<void>;
   onCancel: () => void;
-  isLoading?: boolean;
 }
 
-const FacilityForm = ({ facility, onSubmit, onCancel, isLoading }: FacilityFormProps) => {
+const FacilityForm = ({ facility, onCancel }: FacilityFormProps) => {
+  const { toast } = useToast();
+
   const [formData, setFormData] = useState({
     name: facility?.name || '',
     description: facility?.description || '',
@@ -30,6 +31,9 @@ const FacilityForm = ({ facility, onSubmit, onCancel, isLoading }: FacilityFormP
 
   const [features, setFeatures] = useState<string[]>(facility?.features || []);
   const [newFeature, setNewFeature] = useState('');
+
+  const createFacility = useCreateFacility();
+  const updateFacility = useUpdateFacility();
 
   const handleChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -48,11 +52,38 @@ const FacilityForm = ({ facility, onSubmit, onCancel, isLoading }: FacilityFormP
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit({
+
+    const payload = {
       ...formData,
       features,
-    });
+    };
+
+    try {
+      if (facility) {
+        await updateFacility.mutateAsync({ id: facility.id, ...payload });
+        toast({
+          title: "Fasilitas diperbarui",
+          description: `Data "${formData.name}" berhasil diperbarui.`,
+        });
+      } else {
+        await createFacility.mutateAsync(payload);
+        toast({
+          title: "Fasilitas ditambahkan",
+          description: `Data "${formData.name}" berhasil ditambahkan.`,
+        });
+      }
+
+      onCancel(); // Tutup modal
+    } catch (error) {
+      toast({
+        title: "Gagal menyimpan data",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+    }
   };
+
+  const isLoading = createFacility.isPending || updateFacility.isPending;
 
   return (
     <Card>
@@ -125,7 +156,7 @@ const FacilityForm = ({ facility, onSubmit, onCancel, isLoading }: FacilityFormP
                 value={newFeature}
                 onChange={(e) => setNewFeature(e.target.value)}
                 placeholder="Tambah fitur..."
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+                onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
               />
               <Button type="button" onClick={addFeature}>Tambah</Button>
             </div>

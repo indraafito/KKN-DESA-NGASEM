@@ -354,42 +354,29 @@ export type Database = {
       }
       village_profile: {
         Row: {
-          alamat: string | null
           description: string | null
           id: string
           kepala_desa: string | null
-          latitude: number | null
-          longitude: number | null
           maps_url: string | null
           misi: string | null
           photo_url: string | null
-          sekretaris_desa: string | null
           updated_at: string
           video_url: string | null
           visi: string | null
-          website_name: string | null
           welcome_message: string | null
         }
         Insert: {
-          alamat?: string | null
-          description?: string | null
           id?: string
           kepala_desa?: string | null
-          latitude?: number | null
-          longitude?: number | null
           maps_url?: string | null
           misi?: string | null
           photo_url?: string | null
-          sekretaris_desa?: string | null
           updated_at?: string
           video_url?: string | null
           visi?: string | null
-          website_name?: string | null
           welcome_message?: string | null
         }
         Update: {
-          alamat?: string | null
-          description?: string | null
           id?: string
           kepala_desa?: string | null
           latitude?: number | null
@@ -397,11 +384,9 @@ export type Database = {
           maps_url?: string | null
           misi?: string | null
           photo_url?: string | null
-          sekretaris_desa?: string | null
           updated_at?: string
           video_url?: string | null
           visi?: string | null
-          website_name?: string | null
           welcome_message?: string | null
         }
         Relationships: []

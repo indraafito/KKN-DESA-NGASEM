@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,20 +8,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tables } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { useCreateVillageOfficial, useUpdateVillageOfficial } from "@/hooks/useVillageOfficials";
 import { Upload, X } from "lucide-react";
 
-type VillageOfficial = Tables<'village_officials'>;
+type VillageOfficial = Tables<"village_officials">;
 
 interface VillageOfficialFormProps {
   official?: VillageOfficial;
-  onSubmit: (data: any) => void;
   onCancel: () => void;
-  isLoading?: boolean;
 }
 
-const VillageOfficialForm = ({ official, onSubmit, onCancel, isLoading }: VillageOfficialFormProps) => {
+const VillageOfficialForm = ({ official, onCancel }: VillageOfficialFormProps) => {
   const { toast } = useToast();
   const { uploadImage, isUploading } = useImageUpload();
+  const createOfficial = useCreateVillageOfficial();
+  const updateOfficial = useUpdateVillageOfficial();
+
   const [formData, setFormData] = useState({
     name: official?.name || '',
     position: official?.position || '',
@@ -33,37 +34,10 @@ const VillageOfficialForm = ({ official, onSubmit, onCancel, isLoading }: Villag
     status: official?.status || 'active',
     order_index: official?.order_index || 0,
   });
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState(official?.photo_url || '');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.name.trim() || !formData.position.trim()) {
-      toast({
-        title: "Error",
-        description: "Nama dan jabatan harus diisi",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    let photoUrl = formData.photo_url;
-
-    if (selectedFile) {
-      const uploadedUrl = await uploadImage(selectedFile, 'officials');
-      if (uploadedUrl) {
-        photoUrl = uploadedUrl;
-      }
-    }
-
-    onSubmit({
-      ...formData,
-      photo_url: photoUrl,
-      order_index: Number(formData.order_index),
-      updated_at: new Date().toISOString(),
-    });
-  };
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -73,8 +47,7 @@ const VillageOfficialForm = ({ official, onSubmit, onCancel, isLoading }: Villag
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
@@ -82,6 +55,56 @@ const VillageOfficialForm = ({ official, onSubmit, onCancel, isLoading }: Villag
     setSelectedFile(null);
     setPreviewUrl('');
     setFormData(prev => ({ ...prev, photo_url: '' }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.name.trim() || !formData.position.trim()) {
+      toast({
+        title: "Error",
+        description: "Nama dan jabatan harus diisi",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    let photoUrl = formData.photo_url;
+
+    try {
+      if (selectedFile) {
+        const uploadedUrl = await uploadImage(selectedFile, 'officials');
+        if (uploadedUrl) {
+          photoUrl = uploadedUrl;
+        }
+      }
+
+      const payload = {
+        ...formData,
+        photo_url: photoUrl,
+        order_index: Number(formData.order_index),
+        updated_at: new Date().toISOString(),
+      };
+
+      if (official?.id) {
+        await updateOfficial.mutateAsync({ id: official.id, ...payload });
+        toast({ title: "Data perangkat berhasil diperbarui." });
+      } else {
+        await createOfficial.mutateAsync({ ...payload, created_at: new Date().toISOString() });
+        toast({ title: "Data perangkat berhasil ditambahkan." });
+      }
+
+      onCancel(); // Tutup form/modal
+    } catch (err: any) {
+      toast({
+        title: "Gagal menyimpan data",
+        description: err.message || "Terjadi kesalahan.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -101,7 +124,6 @@ const VillageOfficialForm = ({ official, onSubmit, onCancel, isLoading }: Villag
                 required
               />
             </div>
-
             <div>
               <Label htmlFor="position">Jabatan</Label>
               <Input
@@ -120,10 +142,8 @@ const VillageOfficialForm = ({ official, onSubmit, onCancel, isLoading }: Villag
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
-                placeholder="08xxx"
               />
             </div>
-
             <div>
               <Label htmlFor="email">Email</Label>
               <Input
@@ -131,7 +151,6 @@ const VillageOfficialForm = ({ official, onSubmit, onCancel, isLoading }: Villag
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
-                placeholder="email@example.com"
               />
             </div>
           </div>
@@ -152,9 +171,9 @@ const VillageOfficialForm = ({ official, onSubmit, onCancel, isLoading }: Villag
               <Input
                 id="order_index"
                 type="number"
+                min={0}
                 value={formData.order_index}
                 onChange={(e) => handleChange('order_index', parseInt(e.target.value) || 0)}
-                min="0"
               />
             </div>
 
@@ -177,9 +196,9 @@ const VillageOfficialForm = ({ official, onSubmit, onCancel, isLoading }: Villag
             <div className="mt-2">
               {previewUrl ? (
                 <div className="relative inline-block">
-                  <img 
-                    src={previewUrl} 
-                    alt="Preview" 
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
                     className="w-32 h-32 object-cover rounded-lg border"
                   />
                   <Button
@@ -208,8 +227,10 @@ const VillageOfficialForm = ({ official, onSubmit, onCancel, isLoading }: Villag
           </div>
 
           <div className="flex gap-2 pt-4">
-            <Button type="submit" disabled={isLoading || isUploading}>
-              {isLoading || isUploading ? 'Menyimpan...' : (official ? 'Update' : 'Simpan')}
+            <Button type="submit" disabled={isSubmitting || isUploading}>
+              {isSubmitting || isUploading
+                ? 'Menyimpan...'
+                : official ? 'Update' : 'Simpan'}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               Batal

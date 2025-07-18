@@ -1,39 +1,58 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tables } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
+import { useCreateNews, useUpdateNews } from "@/hooks/useNews";
 import ImageUploadField from "./ImageUploadField";
 
-type News = Tables<'news'>;
+type News = Tables<"news">;
 
 interface NewsFormProps {
   news?: News;
-  onSubmit: (data: any) => void;
   onCancel: () => void;
-  isLoading?: boolean;
 }
 
-const NewsForm = ({ news, onSubmit, onCancel, isLoading }: NewsFormProps) => {
+const NewsForm = ({ news, onCancel }: NewsFormProps) => {
   const { toast } = useToast();
+
+  const createNews = useCreateNews();
+  const updateNews = useUpdateNews();
+
   const [formData, setFormData] = useState({
-    title: news?.title || '',
-    content: news?.content || '',
-    excerpt: news?.excerpt || '',
-    category: news?.category || 'umum',
-    image_url: news?.image_url || '',
-    priority: news?.priority || 'medium',
-    status: news?.status || 'published',
+    title: news?.title || "",
+    content: news?.content || "",
+    excerpt: news?.excerpt || "",
+    category: news?.category || "umum",
+    image_url: news?.image_url || "",
+    priority: news?.priority || "medium",
+    status: news?.status || "published",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.title.trim()) {
       toast({
         title: "Error",
@@ -43,20 +62,41 @@ const NewsForm = ({ news, onSubmit, onCancel, isLoading }: NewsFormProps) => {
       return;
     }
 
-    onSubmit({
-      ...formData,
-      updated_at: new Date().toISOString(),
-    });
-  };
+    setIsSubmitting(true);
 
-  const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    try {
+      if (news) {
+        // Update berita
+        await updateNews.mutateAsync({
+          id: news.id,
+          ...formData,
+          updated_at: new Date().toISOString(),
+        });
+        toast({ title: "Berita diperbarui." });
+      } else {
+        // Tambah berita
+        await createNews.mutateAsync({
+          ...formData,
+          created_at: new Date().toISOString(),
+        });
+        toast({ title: "Berita ditambahkan." });
+      }
+      onCancel(); // Tutup modal
+    } catch (error: any) {
+      toast({
+        title: "Gagal menyimpan",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{news ? 'Edit Berita' : 'Tambah Berita Baru'}</CardTitle>
+        <CardTitle>{news ? "Edit Berita" : "Tambah Berita Baru"}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -65,7 +105,7 @@ const NewsForm = ({ news, onSubmit, onCancel, isLoading }: NewsFormProps) => {
             <Input
               id="title"
               value={formData.title}
-              onChange={(e) => handleChange('title', e.target.value)}
+              onChange={(e) => handleChange("title", e.target.value)}
               required
             />
           </div>
@@ -75,7 +115,7 @@ const NewsForm = ({ news, onSubmit, onCancel, isLoading }: NewsFormProps) => {
             <Textarea
               id="excerpt"
               value={formData.excerpt}
-              onChange={(e) => handleChange('excerpt', e.target.value)}
+              onChange={(e) => handleChange("excerpt", e.target.value)}
               rows={2}
               placeholder="Ringkasan singkat berita..."
             />
@@ -84,7 +124,7 @@ const NewsForm = ({ news, onSubmit, onCancel, isLoading }: NewsFormProps) => {
           <ImageUploadField
             label="Foto Berita"
             value={formData.image_url}
-            onChange={(url) => handleChange('image_url', url)}
+            onChange={(url) => handleChange("image_url", url)}
             folder="news"
           />
 
@@ -93,7 +133,7 @@ const NewsForm = ({ news, onSubmit, onCancel, isLoading }: NewsFormProps) => {
             <Textarea
               id="content"
               value={formData.content}
-              onChange={(e) => handleChange('content', e.target.value)}
+              onChange={(e) => handleChange("content", e.target.value)}
               rows={8}
               placeholder="Tulis isi berita lengkap di sini..."
             />
@@ -102,9 +142,12 @@ const NewsForm = ({ news, onSubmit, onCancel, isLoading }: NewsFormProps) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="category">Kategori</Label>
-              <Select value={formData.category} onValueChange={(value) => handleChange('category', value)}>
+              <Select
+                value={formData.category}
+                onValueChange={(value) => handleChange("category", value)}
+              >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Pilih kategori" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="umum">Umum</SelectItem>
@@ -120,9 +163,12 @@ const NewsForm = ({ news, onSubmit, onCancel, isLoading }: NewsFormProps) => {
 
             <div>
               <Label htmlFor="priority">Prioritas</Label>
-              <Select value={formData.priority} onValueChange={(value) => handleChange('priority', value)}>
+              <Select
+                value={formData.priority}
+                onValueChange={(value) => handleChange("priority", value)}
+              >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Pilih prioritas" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="low">Rendah</SelectItem>
@@ -134,9 +180,12 @@ const NewsForm = ({ news, onSubmit, onCancel, isLoading }: NewsFormProps) => {
 
             <div>
               <Label htmlFor="status">Status</Label>
-              <Select value={formData.status} onValueChange={(value) => handleChange('status', value)}>
+              <Select
+                value={formData.status}
+                onValueChange={(value) => handleChange("status", value)}
+              >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Pilih status" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="draft">Draft</SelectItem>
@@ -147,8 +196,8 @@ const NewsForm = ({ news, onSubmit, onCancel, isLoading }: NewsFormProps) => {
           </div>
 
           <div className="flex gap-2 pt-4">
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Menyimpan...' : (news ? 'Update' : 'Simpan')}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Menyimpan..." : news ? "Update" : "Simpan"}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               Batal

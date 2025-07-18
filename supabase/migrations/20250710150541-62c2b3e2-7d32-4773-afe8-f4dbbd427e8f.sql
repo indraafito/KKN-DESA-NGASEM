@@ -6,7 +6,6 @@ CREATE TABLE public.kkn_programs (
   period TEXT NOT NULL,
   activities TEXT[], -- Array of activities
   participants INTEGER DEFAULT 0,
-  description TEXT,
   status TEXT DEFAULT 'active',
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
@@ -17,7 +16,6 @@ CREATE TABLE public.community_programs (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,
   schedule TEXT NOT NULL,
-  description TEXT,
   location TEXT,
   status TEXT DEFAULT 'active',
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -28,7 +26,6 @@ CREATE TABLE public.community_programs (
 CREATE TABLE public.facilities (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
-  description TEXT,
   features TEXT[], -- Array of features
   condition TEXT DEFAULT 'Baik', -- Baik, Cukup, Perlu Perbaikan
   icon TEXT, -- Emoji or icon identifier

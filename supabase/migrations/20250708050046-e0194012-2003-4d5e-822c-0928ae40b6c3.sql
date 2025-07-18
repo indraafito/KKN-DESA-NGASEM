@@ -12,6 +12,22 @@ CREATE TABLE public.news (
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
+CREATE TABLE IF NOT EXISTS PUBLIC.ANNOUNCEMENTS (
+  ID SERIAL PRIMARY KEY,
+  TITLE TEXT NOT NULL,
+  CONTENT TEXT NOT NULL,
+  DATE DATE NOT NULL DEFAULT CURRENT_DATE,
+  URGENT BOOLEAN DEFAULT FALSE
+);
+
+-- AKTIFKAN ROW-LEVEL SECURITY (RLS)
+ALTER TABLE PUBLIC.ANNOUNCEMENTS ENABLE ROW LEVEL SECURITY;
+
+-- POLICY AGAR BISA DIBACA PUBLIK
+CREATE POLICY "PUBLIC READ ACCESS"
+  ON PUBLIC.ANNOUNCEMENTS
+  FOR SELECT
+  USING (TRUE);
 
 -- Create table for services/layanan
 CREATE TABLE public.services (
@@ -30,12 +46,8 @@ CREATE TABLE public.services (
 CREATE TABLE public.village_profile (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   kepala_desa TEXT,
-  sekretaris_desa TEXT,
   visi TEXT,
   misi TEXT,
-  alamat TEXT,
-  website_name TEXT,
-  description TEXT,
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
@@ -69,7 +81,7 @@ CREATE POLICY "Admin can manage village profile" ON public.village_profile FOR A
 CREATE POLICY "Admin can manage announcements" ON public.announcements FOR ALL USING (true);
 
 -- Insert default village profile data
-INSERT INTO public.village_profile (kepala_desa, sekretaris_desa, visi, misi, alamat, website_name, description)
+INSERT INTO public.village_profile (kepala_desa, sekretaris_desa, visi, misi)
 VALUES (
   'Bapak Suwito',
   'Ibu Siti Aminah',
@@ -97,3 +109,9 @@ INSERT INTO public.news (title, content, excerpt, category, priority) VALUES
 ('Program Pembangunan Jalan Desa', 'Pemerintah Desa Ngasety akan memulai program pembangunan jalan desa untuk meningkatkan akses transportasi warga.', 'Proyek perbaikan infrastruktur jalan desa memasuki fase kedua dengan target selesai pada bulan Maret 2024.', 'Pembangunan', 'high'),
 ('Pelatihan UMKM Digital Marketing', 'Desa Ngasety mengadakan pelatihan digital marketing untuk pelaku UMKM dalam rangka meningkatkan ekonomi desa.', 'Puluhan pelaku UMKM mengikuti pelatihan digital marketing untuk meningkatkan penjualan online.', 'Pelatihan', 'medium'),
 ('Festival Panen Raya 2024', 'Masyarakat Desa Ngasety merayakan festival panen raya dengan berbagai kegiatan budaya dan pameran hasil pertanian.', 'Masyarakat Desa Ngasety merayakan panen raya dengan berbagai kegiatan budaya dan pameran hasil pertanian.', 'Acara', 'medium');
+
+INSERT INTO PUBLIC.ANNOUNCEMENTS (TITLE, CONTENT, URGENT)
+VALUES 
+  ('SELAMAT DATANG', 'SELAMAT DATANG DI APLIKASI KAMI.', FALSE),
+  ('PEMBERITAHUAN PENTING', 'AKAN ADA PEMELIHARAAN SISTEM HARI JUMAT.', TRUE);
+

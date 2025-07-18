@@ -56,7 +56,7 @@ const HeroSection = () => {
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 via-teal-500 opacity-70"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-500 opacity-70"></div>
       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-4 -left-4 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
@@ -75,7 +75,7 @@ const HeroSection = () => {
                     href="https://maps.app.goo.gl/9pMdmZETWoQeWEAaA"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-4 py-2 rounded-full text-white text-sm font-medium animate-bounce-in hover:bg-white/30 transition-colors"
+                    className="inline-flex items-center px-4 py-2 rounded-full text-white text-sm font-medium animate-bounce-in hover:bg-white/20 transition-colors"
                   >
                     <MapPin className="w-4 h-4 mr-2" />
                     {welcomeMessage}
@@ -106,7 +106,7 @@ const HeroSection = () => {
               className="animate-scale-in"
               style={{ animationDelay: "0.6s" }}
             >
-              <Card className="overflow-hidden bg-white/30 backdrop-blur-md border border-white/10 rounded-xl shadow-xl transition-all duration-300">
+              <Card className="overflow-hidden bg-white/20 backdrop-blur-md border border-white/10 rounded-xl shadow-xl transition-all duration-300">
                 <CardContent className="p-6">
                   <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
                     {profile?.video_url ? (
@@ -199,7 +199,7 @@ const HeroSection = () => {
               className="mt-16 animate-fade-in"
               style={{ animationDelay: "1s" }}
             >
-              <Card className="max-w-6xl mx-auto bg-white/30 backdrop-blur-md shadow-xl border border-white/10 rounded-xl">
+              <Card className="max-w-6xl mx-auto bg-white/20 backdrop-blur-md shadow-xl border border-white/10 rounded-xl">
                 <CardContent className="p-8">
                   <h2 className="text-2xl font-bold text-center mb-8 text-white">
                     Prestasi Desa Ngasem
@@ -209,7 +209,7 @@ const HeroSection = () => {
                     {displayedAchievements.map((achievement) => (
                       <div
                         key={achievement.id}
-                        className="bg-white/30 backdrop-blur-md rounded-lg p-6 group hover:bg-white/40 transition-all duration-300 border border-white/10"
+                        className="bg-white/20 backdrop-blur-md rounded-lg p-6 group hover:bg-white/40 transition-all duration-300 border border-white/10"
                       >
                         {achievement.image_url && (
                           <div className="mb-4 rounded-lg overflow-hidden">
@@ -249,7 +249,7 @@ const HeroSection = () => {
                         onClick={() =>
                           setShowAllAchievements(!showAllAchievements)
                         }
-                        className="bg-white/30 hover:bg-white/40 text-white text-sm px-4 py-2 rounded transition-all duration-300 backdrop-blur-md border border-white/10"
+                        className="bg-white/20 hover:bg-white/40 text-white text-sm px-4 py-2 rounded transition-all duration-300 backdrop-blur-md border border-white/10"
                       >
                         {showAllAchievements
                           ? "Tampilkan Lebih Sedikit"

@@ -12,22 +12,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tables } from "@/integrations/supabase/types";
+import {
+  useCreateCommunityProgram,
+  useUpdateCommunityProgram,
+} from "@/hooks/useCommunityPrograms";
+import { useToast } from "@/hooks/use-toast";
 
 type CommunityProgram = Tables<"community_programs">;
 
 interface CommunityProgramFormProps {
   program?: CommunityProgram;
-  onSubmit: (data: any) => Promise<void>;
-  onCancel: () => void;
-  isLoading?: boolean;
+  onCancel: () => void; // untuk menutup modal
 }
 
-const CommunityProgramForm = ({
-  program,
-  onSubmit,
-  onCancel,
-  isLoading,
-}: CommunityProgramFormProps) => {
+const CommunityProgramForm = ({ program, onCancel }: CommunityProgramFormProps) => {
+  const toast = useToast();
+
+  const createMutation = useCreateCommunityProgram();
+  const updateMutation = useUpdateCommunityProgram();
+
   const [formData, setFormData] = useState({
     title: program?.title || "",
     schedule: program?.schedule || "",
@@ -36,36 +39,53 @@ const CommunityProgramForm = ({
     status: program?.status || "active",
   });
 
-  const handleChange = (field: string, value: any) => {
+  const isLoading = createMutation.isPending || updateMutation.isPending;
+
+  const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (typeof onSubmit !== "function") {
-      console.error("Prop onSubmit belum diberikan ke CommunityProgramForm");
-      return;
-    }
-
     try {
-      await onSubmit(formData); // ← panggilan ke parent
-    } catch (err) {
-      console.error("Gagal menyimpan:", err);
-      // tampilkan feedback supaya user tahu ada masalah
-      alert("Terjadi kesalahan saat menyimpan data.");
+      if (!formData.title.trim() || !formData.schedule.trim()) {
+        toast({
+          title: "Gagal",
+          description: "Nama program dan jadwal harus diisi.",
+          variant: "destructive",
+        });
+        return;z
+      }
+
+      if (program) {
+        await updateMutation.mutateAsync({ id: program.id, ...formData });
+        toast({
+          title: "Berhasil",
+          description: "Program berhasil diperbarui.",
+        });
+      } else {
+        await createMutation.mutateAsync(formData);
+        toast({
+          title: "Berhasil",
+          description: "Program berhasil ditambahkan.",
+        });
+      }
+
+      onCancel(); // TUTUP MODAL SAAT BERHASIL
+    } catch (err: any) {
+      toast({
+        title: "Terjadi kesalahan",
+        description: err.message || "Gagal menyimpan data.",
+        variant: "destructive",
+      });
     }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          {program
-            ? "Edit Program Kemasyarakatan"
-            : "Tambah Program Kemasyarakatan"}
-        </CardTitle>
+        <CardTitle>{program ? "Edit Program" : "Tambah Program"}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -85,7 +105,6 @@ const CommunityProgramForm = ({
               id="schedule"
               value={formData.schedule}
               onChange={(e) => handleChange("schedule", e.target.value)}
-              placeholder="Contoh: Setiap Minggu ke-2"
               required
             />
           </div>
@@ -96,7 +115,6 @@ const CommunityProgramForm = ({
               id="location"
               value={formData.location}
               onChange={(e) => handleChange("location", e.target.value)}
-              placeholder="Contoh: Balai Desa"
             />
           </div>
 
@@ -106,7 +124,6 @@ const CommunityProgramForm = ({
               id="description"
               value={formData.description}
               onChange={(e) => handleChange("description", e.target.value)}
-              rows={3}
             />
           </div>
 
@@ -117,7 +134,7 @@ const CommunityProgramForm = ({
               onValueChange={(value) => handleChange("status", value)}
             >
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder="Pilih status" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="active">Aktif</SelectItem>
@@ -126,7 +143,7 @@ const CommunityProgramForm = ({
             </Select>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 justify-end">
             <Button type="submit" disabled={isLoading}>
               {isLoading ? "Menyimpan..." : "Simpan"}
             </Button>

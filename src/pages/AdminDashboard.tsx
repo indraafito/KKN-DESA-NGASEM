@@ -43,7 +43,25 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Plus, Globe, LogOut } from "lucide-react";
+import {
+  Plus,
+  Globe,
+  LogOut,
+  Home,
+  Settings,
+  Users,
+  FileText,
+  Building,
+  Calendar,
+  GraduationCap,
+  BarChart3,
+  Trophy,
+  Sparkles,
+  Shield,
+  Pencil,
+  Trash,
+  Trash2,
+} from "lucide-react";
 import { useVillageProfile } from "@/hooks/useVillageProfile";
 
 const AdminDashboard = () => {
@@ -69,6 +87,32 @@ const AdminDashboard = () => {
   const handleCancel = () => {};
   const { logout } = useAuth();
 
+  // Menu items with icons
+  const menuItems = [
+    { key: "profile", label: "Profil Desa", icon: Home },
+    { key: "services", label: "Layanan", icon: Settings },
+    { key: "news", label: "Berita", icon: FileText },
+    { key: "officials", label: "Perangkat", icon: Users },
+    { key: "facilities", label: "Fasilitas", icon: Building },
+    { key: "programs", label: "Program", icon: Calendar },
+    { key: "kkn", label: "KKN", icon: GraduationCap },
+    { key: "statistics", label: "Statistik", icon: BarChart3 },
+    { key: "achievements", label: "Prestasi", icon: Trophy },
+  ];
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteModalData, setDeleteModalData] = useState({
+    type: "",
+    id: "",
+    title: "",
+    message: "",
+  });
+
+  const openDeleteModal = (type, id, title, message) => {
+    setDeleteModalData({ type, id, title, message });
+    setShowDeleteModal(true);
+  };
+
   // Komponen header sidebar agar tidak error hooks
   const SidebarHeaderContent = () => {
     const { state } = useSidebar();
@@ -76,24 +120,21 @@ const AdminDashboard = () => {
       return (
         <div className="flex flex-col items-center gap-6">
           <div title="Dashboard" className="cursor-default">
-            <img
-              src="/headericon.png"
-              alt="Admin Icon"
-              className="w-10 h-10 rounded-full object-cover bg-white border border-emerald-100"
-            />
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg">
+              <Shield className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
       );
     }
     return (
       <div className="flex items-center space-x-4">
-        <img
-          src="/headericon.png"
-          alt="Admin Icon"
-          className="w-12 h-12 rounded-full object-cover bg-white border border-emerald-100"
-        />
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg">
+          <Shield className="w-7 h-7 text-white" />
+        </div>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-sm text-gray-600">Admin Panel</p>
         </div>
       </div>
     );
@@ -104,38 +145,81 @@ const AdminDashboard = () => {
     const { state } = useSidebar();
     if (state !== "collapsed") return null;
     return (
-      <div className="sticky top-0 z-20 bg-white shadow-sm border-b flex items-center h-16 px-4">
-        <SidebarTrigger />
+      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl shadow-sm border-b border-gray-200 flex items-center h-16 px-4">
+        <SidebarTrigger className="hover:bg-gray-100 p-2 rounded-lg transition-colors" />
       </div>
     );
+  };
+
+  const handleConfirmDelete = () => {
+    const { type, id } = deleteModalData;
+
+    switch (type) {
+      case "service":
+        deleteService.mutate(id);
+        break;
+      case "news":
+        deleteNews.mutate(id);
+        break;
+      case "official":
+        deleteOfficial.mutate(id);
+        break;
+      case "facility":
+        deleteFacility.mutate(id);
+        break;
+      case "program":
+        deleteCommunityProgram.mutate(id);
+        break;
+      case "kkn":
+        deleteKKNProgram.mutate(id);
+        break;
+      case "statistic":
+        deleteStatistic.mutate(id);
+        break;
+      case "achievement":
+        deleteAchievement.mutate(id);
+        break;
+    }
+
+    setShowDeleteModal(false);
+    setDeleteModalData({ type: "", id: "", title: "", message: "" });
   };
 
   // Services
   const { data: services = [], isLoading: isServicesLoading } = useServices();
   const deleteService = useDeleteService();
-  const handleDeleteService = (id: string) => {
-    if (window.confirm("Yakin ingin menghapus layanan ini?")) {
-      deleteService.mutate(id);
-    }
+  const handleDeleteService = (id, name) => {
+    openDeleteModal(
+      "service",
+      id,
+      "Hapus Layanan",
+      `Yakin ingin menghapus layanan "${name}"?`
+    );
   };
 
   // News
   const { data: news = [], isLoading: isNewsLoading } = useNews();
   const deleteNews = useDeleteNews();
-  const handleDeleteNews = (id: string) => {
-    if (window.confirm("Yakin ingin menghapus berita ini?")) {
-      deleteNews.mutate(id);
-    }
+  const handleDeleteNews = (id, title) => {
+    openDeleteModal(
+      "news",
+      id,
+      "Hapus Berita",
+      `Yakin ingin menghapus berita "${title}"?`
+    );
   };
 
   // Officials
   const { data: officials = [], isLoading: isOfficialsLoading } =
     useVillageOfficials();
   const deleteOfficial = useDeleteVillageOfficial();
-  const handleDeleteOfficial = (id: string) => {
-    if (window.confirm("Yakin ingin menghapus perangkat ini?")) {
-      deleteOfficial.mutate(id);
-    }
+  const handleDeleteOfficial = (id, name) => {
+    openDeleteModal(
+      "official",
+      id,
+      "Hapus Perangkat",
+      `Yakin ingin menghapus perangkat "${name}"?`
+    );
   };
 
   // Community Programs
@@ -144,40 +228,64 @@ const AdminDashboard = () => {
     isLoading: isCommunityProgramsLoading,
   } = useCommunityPrograms();
   const deleteCommunityProgram = useDeleteCommunityProgram();
-  const handleDeleteCommunityProgram = (id: string) => {
-    if (window.confirm("Yakin ingin menghapus program ini?")) {
-      deleteCommunityProgram.mutate(id);
-    }
+  const handleDeleteCommunityProgram = (id, title) => {
+    openDeleteModal(
+      "program",
+      id,
+      "Hapus Program",
+      `Yakin ingin menghapus program "${title}"?`
+    );
   };
 
   // KKN Programs
   const { data: kknPrograms = [], isLoading: isKKNProgramsLoading } =
     useKKNPrograms();
   const deleteKKNProgram = useDeleteKKNProgram();
-  const handleDeleteKKNProgram = (id: string) => {
-    if (window.confirm("Yakin ingin menghapus program KKN ini?")) {
-      deleteKKNProgram.mutate(id);
-    }
+  const handleDeleteKKNProgram = (id, title) => {
+    openDeleteModal(
+      "kkn",
+      id,
+      "Hapus Program KKN",
+      `Yakin ingin menghapus program KKN "${title}"?`
+    );
   };
 
   // Village Statistics
   const { data: statistics = [], isLoading: isStatisticsLoading } =
     useVillageStatistics();
   const deleteStatistic = useDeleteVillageStatistic();
-  const handleDeleteStatistic = (id: string) => {
-    if (window.confirm("Yakin ingin menghapus statistik ini?")) {
-      deleteStatistic.mutate(id);
-    }
+  const handleDeleteStatistic = (id, label) => {
+    openDeleteModal(
+      "statistic",
+      id,
+      "Hapus Statistik",
+      `Yakin ingin menghapus statistik "${label}"?`
+    );
   };
 
   // Village Achievements
   const { data: achievements = [], isLoading: isAchievementsLoading } =
     useVillageAchievements();
   const deleteAchievement = useDeleteVillageAchievement();
-  const handleDeleteAchievement = (id: string) => {
-    if (window.confirm("Yakin ingin menghapus prestasi ini?")) {
-      deleteAchievement.mutate(id);
-    }
+  const handleDeleteAchievement = (id, title) => {
+    openDeleteModal(
+      "achievement",
+      id,
+      "Hapus Prestasi",
+      `Yakin ingin menghapus prestasi "${title}"?`
+    );
+  };
+
+  const { data: facilities = [], isLoading: isFacilitiesLoading } =
+    useFacilities();
+  const deleteFacility = useDeleteFacility();
+  const handleDeleteFacility = (id, name) => {
+    openDeleteModal(
+      "facility",
+      id,
+      "Hapus Fasilitas",
+      `Yakin ingin menghapus fasilitas "${name}"?`
+    );
   };
 
   // Village Profile
@@ -186,65 +294,67 @@ const AdminDashboard = () => {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-svh w-full bg-gray-50">
+      <div className="flex min-h-svh w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
         {/* Sidebar */}
         <Sidebar
           collapsible="none"
-          className="fixed left-0 top-0 w-[17rem] min-w-[17rem] max-w-[17rem] flex-shrink-0 z-20 border-r border-gray-200 bg-white/90 shadow-xl backdrop-blur-xl"
+          className="fixed left-0 top-0 w-[18rem] min-w-[18rem] max-w-[18rem] flex-shrink-0 z-20 border-r border-gray-200/50 bg-white/95 shadow-2xl backdrop-blur-xl"
         >
           <div className="flex flex-col h-full">
             {/* Header */}
-            <div className="flex flex-col gap-4 p-6 border-b border-emerald-100/40">
+            <div className="flex flex-col gap-4 p-6 border-b border-gray-200/50 bg-gradient-to-r from-emerald-50 to-blue-50">
               <SidebarHeaderContent />
             </div>
+
             {/* Menu */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar px-2 py-4">
-              <SidebarMenu>
-                {[
-                  { key: "profile", label: "Profil Desa" },
-                  { key: "services", label: "Layanan" },
-                  { key: "news", label: "Berita" },
-                  { key: "officials", label: "Perangkat" },
-                  { key: "facilities", label: "Fasilitas" },
-                  { key: "programs", label: "Program" },
-                  { key: "kkn", label: "KKN" },
-                  { key: "statistics", label: "Statistik" },
-                  { key: "achievements", label: "Prestasi" },
-                ].map((item, idx, arr) => (
-                  <React.Fragment key={item.key}>
-                    <SidebarMenuItem>
+            <div className="flex-1 overflow-y-auto custom-scrollbar px-3 py-6">
+              <SidebarMenu className="space-y-2">
+                {menuItems.map((item, idx) => {
+                  const Icon = item.icon;
+                  return (
+                    <SidebarMenuItem key={item.key}>
                       <button
-                        className={`w-full text-left px-4 py-2 rounded-xl transition font-semibold text-base tracking-wide relative overflow-hidden
+                        className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 font-medium text-sm tracking-wide relative overflow-hidden group
                           ${
                             selectedMenu === item.key
-                              ? "bg-gradient-to-r from-emerald-500/90 to-emerald-400/80 text-white shadow-lg border border-emerald-400 ring-2 ring-emerald-300"
-                              : "hover:bg-emerald-50 text-emerald-900 border border-transparent"
+                              ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/25 scale-105"
+                              : "hover:bg-gradient-to-r hover:from-emerald-50 hover:to-blue-50 text-gray-700 hover:text-emerald-700 hover:shadow-md"
                           }
                         `}
                         onClick={() => setSelectedMenu(item.key)}
                       >
-                        {item.label}
+                        <div className="flex items-center space-x-3">
+                          <Icon
+                            className={`w-5 h-5 ${
+                              selectedMenu === item.key
+                                ? "text-white"
+                                : "text-gray-500 group-hover:text-emerald-600"
+                            }`}
+                          />
+                          <span>{item.label}</span>
+                        </div>
+                        {selectedMenu === item.key && (
+                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-blue-400/20 rounded-xl animate-pulse" />
+                        )}
                       </button>
                     </SidebarMenuItem>
-                    {idx < arr.length - 1 && (
-                      <div className="border-b border-emerald-100/60 mx-4" />
-                    )}
-                  </React.Fragment>
-                ))}
+                  );
+                })}
               </SidebarMenu>
             </div>
+
             {/* Footer: Lihat Website & Logout */}
-            <div className="p-4 border-t border-emerald-100/40 flex flex-col gap-2 mt-auto bg-white/70 backdrop-blur-xl">
+            <div className="p-4 border-t border-gray-200/50 flex flex-col gap-3 mt-auto bg-gradient-to-r from-gray-50 to-blue-50">
               <Button
                 onClick={() => window.open("/", "_blank")}
-                className="flex items-center space-x-2 bg-emerald-600 border border-emerald-600 text-white hover:bg-emerald-700 hover:border-emerald-700 shadow-md rounded-xl py-2"
+                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25 rounded-xl py-3 transition-all duration-200 hover:scale-105"
               >
                 <Globe className="w-4 h-4" />
                 <span>Lihat Website</span>
               </Button>
               <Button
                 onClick={() => setShowLogoutModal(true)}
-                className="flex items-center space-x-2 bg-red-600 border border-red-600 text-white hover:bg-red-700 hover:border-red-700 shadow-md rounded-xl py-2"
+                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg shadow-red-500/25 rounded-xl py-3 transition-all duration-200 hover:scale-105"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Logout</span>
@@ -252,230 +362,248 @@ const AdminDashboard = () => {
             </div>
           </div>
         </Sidebar>
+
         {/* Main Content */}
-        <div className="flex-1 min-w-0 flex flex-col min-h-svh w-full ml-[16rem]">
+        <div className="flex-1 min-w-0 flex flex-col min-h-svh w-full ml-[17rem]">
           <HeaderMenuButton />
-          <div className="flex-1 w-full h-full px-6 py-8">
-            <div className="mb-8"></div>
-            {/* Konten berdasarkan menu */}
+          <div className="flex-1 w-full h-full px-8 py-8">
+            {/* Page Header */}
+            <div className="mb-8">
+              <div className="flex items-center space-x-3 mb-2">
+                {React.createElement(
+                  menuItems.find((item) => item.key === selectedMenu)?.icon ||
+                    Home,
+                  {
+                    className: "w-8 h-8 text-emerald-600",
+                  }
+                )}
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {menuItems.find((item) => item.key === selectedMenu)?.label ||
+                    "Dashboard"}
+                </h1>
+              </div>
+              <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full"></div>
+            </div>
+
+            {/* Content Cards */}
             {selectedMenu === "profile" && (
-              <div className="bg-white/90 rounded-2xl p-0">
-                <div className="flex flex-row items-center justify-between px-6 pt-6 pb-2">
-                  <h2 className="text-xl font-bold mb-2">Profil Desa</h2>
-                  <Button
-                    onClick={() =>
-                      openModal(
-                        "Edit Profil Desa",
-                        <VillageProfileForm
-                          profile={villageProfile}
-                          onSubmit={handleSubmit}
-                          onCancel={closeModal}
-                        />
-                      )
-                    }
-                  >
-                    Edit Profil
-                  </Button>
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden">
+                <div className="bg-gradient-to-r from-emerald-500 to-blue-500 px-8 py-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <Home className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white">
+                        Profil Desa
+                      </h2>
+                    </div>
+                    <Button
+                      onClick={() =>
+                        openModal(
+                          "Edit Profil Desa",
+                          <VillageProfileForm
+                            profile={villageProfile}
+                            onCancel={closeModal}
+                          />
+                        )
+                      }
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      Edit Profil
+                    </Button>
+                  </div>
                 </div>
-                <div className="px-6 pb-6">
+                <div className="p-8">
                   {isVillageProfileLoading ? (
-                    <div className="text-gray-500">Memuat profil desa...</div>
+                    <div className="flex items-center justify-center py-12">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+                      <span className="ml-3 text-gray-600">
+                        Memuat profil desa...
+                      </span>
+                    </div>
                   ) : !villageProfile ? (
-                    <div className="text-gray-500">
-                      Belum ada data profil desa.
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Home className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <p className="text-gray-500">
+                        Belum ada data profil desa.
+                      </p>
                     </div>
                   ) : (
-                    <div className="flex flex-col gap-4 text-gray-700">
-                      <div className="font-semibold text-base mb-1">
-                        Preview Data Profil Desa
-                      </div>
-                      <div className="w-full bg-emerald-50/60 rounded-lg p-4 shadow-sm border border-emerald-100/60">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-xs">
-                          <div className="flex flex-col">
-                            <span className="text-emerald-700 font-semibold">
-                              Nama Website
-                            </span>
-                            <span className="mt-0.5 text-gray-900 font-medium">
-                              {villageProfile.website_name || "-"}
-                            </span>
-                          </div>
-                          <div className="flex flex-col">
+                    <div className="flex flex-col gap-6">
+                      <div className="bg-gradient-to-br from-emerald-50 to-blue-50 rounded-2xl p-6 border border-emerald-200/50">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                          <div className="flex flex-col space-y-1">
                             <span className="text-emerald-700 font-semibold">
                               Kepala Desa
                             </span>
-                            <span className="mt-0.5 text-gray-900 font-medium">
+                            <span className="text-gray-900 font-medium bg-white/60 rounded-lg px-3 py-2">
                               {villageProfile.kepala_desa || "-"}
                             </span>
                           </div>
-                          <div className="flex flex-col">
-                            <span className="text-emerald-700 font-semibold">
-                              Sekretaris Desa
-                            </span>
-                            <span className="mt-0.5 text-gray-900 font-medium">
-                              {villageProfile.sekretaris_desa || "-"}
-                            </span>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-emerald-700 font-semibold">
-                              Alamat
-                            </span>
-                            <span className="mt-0.5 text-gray-900 font-medium">
-                              {villageProfile.alamat || "-"}
-                            </span>
-                          </div>
-                          <div className="flex flex-col md:col-span-2">
+                          <div className="flex flex-col space-y-1 md:col-span-2">
                             <span className="text-emerald-700 font-semibold">
                               Visi
                             </span>
-                            <span className="mt-0.5 text-gray-900 font-medium whitespace-pre-line">
+                            <span className="text-gray-900 font-medium bg-white/60 rounded-lg px-3 py-2 whitespace-pre-line">
                               {villageProfile.visi || "-"}
                             </span>
                           </div>
-                          <div className="flex flex-col md:col-span-2">
+                          <div className="flex flex-col space-y-1 md:col-span-2">
                             <span className="text-emerald-700 font-semibold">
                               Misi
                             </span>
-                            <span className="mt-0.5 text-gray-900 font-medium whitespace-pre-line">
+                            <span className="text-gray-900 font-medium bg-white/60 rounded-lg px-3 py-2 whitespace-pre-line">
                               {villageProfile.misi || "-"}
                             </span>
                           </div>
-                          <div className="flex flex-col md:col-span-2">
-                            <span className="text-emerald-700 font-semibold">
-                              Deskripsi
-                            </span>
-                            <span className="mt-0.5 text-gray-900 font-medium whitespace-pre-line">
-                              {villageProfile.description || "-"}
-                            </span>
-                          </div>
-                          <div className="flex flex-col md:col-span-2">
+                          <div className="flex flex-col space-y-1 md:col-span-2">
                             <span className="text-emerald-700 font-semibold">
                               Welcome Message
                             </span>
-                            <span className="mt-0.5 text-gray-900 font-medium whitespace-pre-line">
+                            <span className="text-gray-900 font-medium bg-white/60 rounded-lg px-3 py-2 whitespace-pre-line">
                               {villageProfile.welcome_message || "-"}
                             </span>
                           </div>
-                          <div className="flex flex-col">
+                          <div className="flex flex-col space-y-1">
                             <span className="text-emerald-700 font-semibold">
                               Photo URL
                             </span>
-                            <span className="mt-0.5 text-gray-900 font-medium">
+                            <span className="text-gray-900 font-medium bg-white/60 rounded-lg px-3 py-2 break-all">
                               {villageProfile.photo_url || "-"}
                             </span>
                           </div>
-                          <div className="flex flex-col">
+                          <div className="flex flex-col space-y-1">
                             <span className="text-emerald-700 font-semibold">
                               Video URL
                             </span>
-                            <span className="mt-0.5 text-gray-900 font-medium">
+                            <span className="text-gray-900 font-medium bg-white/60 rounded-lg px-3 py-2 break-all">
                               {villageProfile.video_url || "-"}
                             </span>
                           </div>
-                          <div className="flex flex-col">
+                          <div className="flex flex-col space-y-1">
                             <span className="text-emerald-700 font-semibold">
                               Maps URL
                             </span>
-                            <span className="mt-0.5 text-gray-900 font-medium">
+                            <span className="text-gray-900 font-medium bg-white/60 rounded-lg px-3 py-2 break-all">
                               {villageProfile.maps_url || "-"}
-                            </span>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-emerald-700 font-semibold">
-                              Latitude
-                            </span>
-                            <span className="mt-0.5 text-gray-900 font-medium">
-                              {villageProfile.latitude ?? "-"}
-                            </span>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-emerald-700 font-semibold">
-                              Longitude
-                            </span>
-                            <span className="mt-0.5 text-gray-900 font-medium">
-                              {villageProfile.longitude ?? "-"}
                             </span>
                           </div>
                         </div>
                       </div>
-                      <div className="mt-1 text-[11px] text-gray-500 italic">
-                        Form: Semua field di atas dapat diedit melalui tombol
-                        Edit Profil.
+                      <div className="text-xs text-gray-500 italic bg-blue-50 rounded-lg p-3 border border-blue-200">
+                        💡 Semua field di atas dapat diedit melalui tombol Edit
+                        Profil.
                       </div>
                     </div>
                   )}
                 </div>
               </div>
             )}
+
             {selectedMenu === "services" && (
-              <div className="bg-white/90 rounded-2xl p-0">
-                <div className="flex flex-row items-center justify-between px-6 pt-6 pb-2">
-                  <h2 className="text-xl font-bold">Layanan Desa</h2>
-                  <Button
-                    onClick={() =>
-                      openModal(
-                        "Tambah Layanan",
-                        <ServiceForm
-                          onSubmit={handleSubmit}
-                          onCancel={closeModal}
-                        />
-                      )
-                    }
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Tambah Layanan
-                  </Button>
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-500 px-8 py-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <Settings className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white">
+                        Layanan Desa
+                      </h2>
+                    </div>
+                    <Button
+                      onClick={() =>
+                        openModal(
+                          "Tambah Layanan",
+                          <ServiceForm onCancel={closeModal} />
+                        )
+                      }
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Tambah Layanan
+                    </Button>
+                  </div>
                 </div>
-                <div className="px-6 pb-6">
-                  <div className="flex flex-col gap-3">
+                <div className="p-8">
+                  <div className="grid gap-4">
                     {isServicesLoading ? (
-                      <div className="text-gray-500">
-                        Memuat data layanan...
+                      <div className="flex items-center justify-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                        <span className="ml-3 text-gray-600">
+                          Memuat data layanan...
+                        </span>
                       </div>
                     ) : services.length === 0 ? (
-                      <div className="text-gray-500">Belum ada layanan.</div>
+                      <div className="text-center py-12">
+                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Settings className="w-8 h-8 text-gray-400" />
+                        </div>
+                        <p className="text-gray-500">Belum ada layanan.</p>
+                      </div>
                     ) : (
-                      services.map((service) => (
+                      services.map((service, index) => (
                         <div
                           key={service.id}
-                          className="flex items-center justify-between bg-emerald-50 rounded-lg px-4 py-2"
+                          className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-200/50 hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
                         >
-                          <div className="flex flex-col gap-1">
-                            <div className="font-semibold">{service.name}</div>
-                            {service.requirements && (
-                              <div className="text-xs text-gray-600">
-                                Syarat: {service.requirements}
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1 space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                  {index + 1}
+                                </div>
+                                <h3 className="text-lg font-semibold text-gray-900">
+                                  {service.name}
+                                </h3>
                               </div>
-                            )}
-                            {service.process_time && (
-                              <div className="text-xs text-gray-600">
-                                Waktu Proses: {service.process_time}
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() =>
-                                openModal(
-                                  "Edit Layanan",
-                                  <ServiceForm
-                                    service={service}
-                                    onSubmit={handleSubmit}
-                                    onCancel={closeModal}
-                                  />
-                                )
-                              }
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => handleDeleteService(service.id)}
-                            >
-                              Hapus
-                            </Button>
+                              {service.requirements && (
+                                <div className="text-sm text-gray-600 bg-white/60 rounded-lg px-3 py-2">
+                                  <strong>Syarat:</strong>{" "}
+                                  {service.requirements}
+                                </div>
+                              )}
+                              {service.process_time && (
+                                <div className="text-sm text-gray-600 bg-white/60 rounded-lg px-3 py-2">
+                                  <strong>Waktu Proses:</strong>{" "}
+                                  {service.process_time}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex gap-2 ml-4">
+                              <Button
+                                size="sm"
+                                onClick={() =>
+                                  openModal(
+                                    "Edit Layanan",
+                                    <ServiceForm
+                                      service={service}
+                                      onCancel={closeModal}
+                                    />
+                                  )
+                                }
+                                className="text-white bg-blue-600 hover:bg-blue-700 border border-blue-700 flex items-center gap-1"
+                              >
+                                <Pencil className="w-4 h-4" />
+                                Edit
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() =>
+                                  handleDeleteService(service.id, service.name)
+                                }
+                                className="bg-red-500 hover:bg-red-600"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                                Hapus
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       ))
@@ -484,39 +612,60 @@ const AdminDashboard = () => {
                 </div>
               </div>
             )}
+
             {selectedMenu === "applications" && (
-              <div className="bg-white/90 rounded-2xl p-0">
-                <div className="px-6 pt-6 pb-2">
-                  <h2 className="text-xl font-bold mb-2">Permohonan Layanan</h2>
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden">
+                <div className="bg-gradient-to-r from-purple-500 to-pink-500 px-8 py-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-white" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white">
+                      Permohonan Layanan
+                    </h2>
+                  </div>
                 </div>
-                <div className="px-6 pb-6">
+                <div className="p-8">
                   <ServiceApplicationsTable />
                 </div>
               </div>
             )}
+
             {selectedMenu === "news" && (
-              <div className="bg-white/90 rounded-2xl p-0">
-                <div className="flex flex-row items-center justify-between px-6 pt-6 pb-2">
-                  <h2 className="text-xl font-bold">Berita & Pengumuman</h2>
-                  <Button
-                    onClick={() =>
-                      openModal(
-                        "Tambah Berita",
-                        <NewsForm
-                          onSubmit={handleSubmit}
-                          onCancel={closeModal}
-                        />
-                      )
-                    }
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Tambah Berita
-                  </Button>
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden">
+                <div className="bg-gradient-to-r from-green-500 to-teal-500 px-8 py-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <FileText className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white">
+                        Berita & Pengumuman
+                      </h2>
+                    </div>
+                    <Button
+                      onClick={() =>
+                        openModal(
+                          "Tambah Berita",
+                          <NewsForm onCancel={closeModal} />
+                        )
+                      }
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Tambah Berita
+                    </Button>
+                  </div>
                 </div>
-                <div className="px-6 pb-6">
-                  <div className="flex flex-col gap-3">
+                <div className="p-8">
+                  <div className="grid gap-4">
                     {isNewsLoading ? (
-                      <div className="text-gray-500">Memuat data berita...</div>
+                      <div className="flex items-center justify-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+                        <span className="ml-3 text-gray-600">
+                          Memuat data berita...
+                        </span>
+                      </div>
                     ) : news.length === 0 ? (
                       <div className="text-gray-500">Belum ada berita.</div>
                     ) : (
@@ -535,25 +684,23 @@ const AdminDashboard = () => {
                           <div className="flex gap-2">
                             <Button
                               size="sm"
-                              variant="outline"
                               onClick={() =>
                                 openModal(
                                   "Edit Berita",
-                                  <NewsForm
-                                    news={item}
-                                    onSubmit={handleSubmit}
-                                    onCancel={closeModal}
-                                  />
+                                  <NewsForm news={item} onCancel={closeModal} />
                                 )
                               }
+                              className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
                             >
+                              <Pencil className="w-4 h-4" />
                               Edit
                             </Button>
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => handleDeleteNews(item.id)}
+                              onClick={() => handleDeleteNews(news.id, item.title)}
                             >
+                              <Trash2 className="w-4 h-4" />
                               Hapus
                             </Button>
                           </div>
@@ -565,68 +712,90 @@ const AdminDashboard = () => {
               </div>
             )}
             {selectedMenu === "officials" && (
-              <div className="bg-white/90 rounded-2xl p-0">
-                <div className="flex flex-row items-center justify-between px-6 pt-6 pb-2">
-                  <h2 className="text-xl font-bold">Perangkat Desa</h2>
-                  <Button
-                    onClick={() =>
-                      openModal(
-                        "Tambah Perangkat Desa",
-                        <VillageOfficialForm
-                          onSubmit={handleSubmit}
-                          onCancel={closeModal}
-                        />
-                      )
-                    }
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Tambah Perangkat
-                  </Button>
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-500 to-indigo-500 px-8 py-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <Users className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white">
+                        Perangkat Desa
+                      </h2>
+                    </div>
+                    <Button
+                      onClick={() =>
+                        openModal(
+                          "Tambah Perangkat Desa",
+                          <VillageOfficialForm onCancel={closeModal} />
+                        )
+                      }
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Tambah Perangkat
+                    </Button>
+                  </div>
                 </div>
-                <div className="px-6 pb-6">
-                  <div className="flex flex-col gap-3">
+                <div className="p-8">
+                  <div className="grid gap-4">
                     {isOfficialsLoading ? (
-                      <div className="text-gray-500">
-                        Memuat data perangkat...
+                      <div className="flex items-center justify-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                        <span className="ml-3 text-gray-600">
+                          Memuat data perangkat...
+                        </span>
                       </div>
                     ) : officials.length === 0 ? (
-                      <div className="text-gray-500">Belum ada perangkat.</div>
+                      <div className="text-center py-12">
+                        <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-500 text-lg">
+                          Belum ada perangkat desa
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          Klik tombol "Tambah Perangkat" untuk menambahkan
+                          perangkat baru
+                        </p>
+                      </div>
                     ) : (
                       officials.map((official) => (
                         <div
                           key={official.id}
-                          className="flex items-center justify-between bg-emerald-50 rounded-lg px-4 py-2"
+                          className="flex items-center justify-between bg-blue-50 rounded-lg px-4 py-3 hover:bg-blue-100 transition-colors"
                         >
-                          <div>
-                            <div className="font-semibold">
+                          <div className="flex-1">
+                            <div className="font-semibold text-gray-800">
                               {official.position}
                             </div>
-                            <div className="text-xs text-gray-600">
+                            <div className="text-xs text-gray-600 mt-1">
                               Nama: {official.name}
                             </div>
                           </div>
                           <div className="flex gap-2">
                             <Button
                               size="sm"
-                              variant="outline"
+                              className="bg-blue-500 text-white hover:bg-blue-600"
                               onClick={() =>
                                 openModal(
                                   "Edit Perangkat",
                                   <VillageOfficialForm
                                     official={official}
-                                    onSubmit={handleSubmit}
                                     onCancel={closeModal}
                                   />
                                 )
                               }
                             >
+                              <Pencil className="w-4 h-4 mr-1" />
                               Edit
                             </Button>
+
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => handleDeleteOfficial(official.id)}
+                              onClick={() => handleDeleteOfficial(official.id, official.name)}
+                              className="hover:bg-red-600"
                             >
+                              <Trash2 className="w-4 h-4" />
                               Hapus
                             </Button>
                           </div>
@@ -638,67 +807,168 @@ const AdminDashboard = () => {
               </div>
             )}
             {selectedMenu === "facilities" && (
-              <div className="bg-white/90 rounded-2xl p-0">
-                <div className="flex flex-row items-center justify-between px-6 pt-6 pb-2">
-                  <h2 className="text-xl font-bold">Fasilitas Desa</h2>
-                  <Button
-                    onClick={() =>
-                      openModal(
-                        "Tambah Fasilitas",
-                        <FacilityForm
-                          onSubmit={handleSubmit}
-                          onCancel={closeModal}
-                        />
-                      )
-                    }
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Tambah Fasilitas
-                  </Button>
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden">
+                <div className="bg-gradient-to-r from-purple-500 to-pink-500 px-8 py-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <Building className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white">
+                        Fasilitas Desa
+                      </h2>
+                    </div>
+                    <Button
+                      onClick={() =>
+                        openModal(
+                          "Tambah Fasilitas",
+                          <FacilityForm onCancel={closeModal} />
+                        )
+                      }
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Tambah Fasilitas
+                    </Button>
+                  </div>
                 </div>
-                <div className="px-6 pb-6">
-                  <div className="flex flex-col gap-3">
-                    {/* Fasilitas section is handled in FacilitiesSection component or needs correct hook/logic here */}
+                <div className="p-8">
+                  <div className="grid gap-4">
+                    {isFacilitiesLoading ? (
+                      <div className="flex items-center justify-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+                        <span className="ml-3 text-gray-600">
+                          Memuat data fasilitas...
+                        </span>
+                      </div>
+                    ) : facilities.length === 0 ? (
+                      <div className="text-center py-12">
+                        <Building className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-500 text-lg">
+                          Belum ada fasilitas
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          Klik tombol "Tambah Fasilitas" untuk menambahkan
+                          fasilitas baru
+                        </p>
+                      </div>
+                    ) : (
+                      facilities.map((facility) => (
+                        <div
+                          key={facility.id}
+                          className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200/50 hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1 space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                                  <Building className="w-4 h-4 text-white" />
+                                </div>
+                                <h3 className="text-lg font-semibold text-gray-900">
+                                  {facility.name}
+                                </h3>
+                              </div>
+                              {facility.description && (
+                                <div className="text-sm text-gray-600 bg-white/60 rounded-lg px-3 py-2">
+                                  <strong>Deskripsi:</strong>{" "}
+                                  {facility.description}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex gap-2 ml-4">
+                              <Button
+                                size="sm"
+                                onClick={() =>
+                                  openModal(
+                                    "Edit Fasilitas",
+                                    <FacilityForm
+                                      facility={facility}
+                                      onCancel={closeModal}
+                                    />
+                                  )
+                                }
+                                className="bg-blue-500 hover:bg-blue-600 text-white border border-blue-600"
+                              >
+                                <Pencil className="w-4 h-4" />
+                                Edit
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() =>
+                                  handleDeleteFacility(facility.id, facility.name)
+                                }
+                                className="bg-red-500 hover:bg-red-600"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                                Hapus
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>
             )}
             {selectedMenu === "programs" && (
-              <div className="bg-white/90 rounded-2xl p-0">
-                <div className="flex flex-row items-center justify-between px-6 pt-6 pb-2">
-                  <h2 className="text-xl font-bold">Program Komunitas</h2>
-                  <Button
-                    onClick={() =>
-                      openModal(
-                        "Tambah Program",
-                        <CommunityProgramForm
-                          onSubmit={handleSubmit}
-                          onCancel={closeModal}
-                        />
-                      )
-                    }
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Tambah Program
-                  </Button>
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden">
+                <div className="bg-gradient-to-r from-orange-500 to-red-500 px-8 py-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <Calendar className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white">
+                        Program Komunitas
+                      </h2>
+                    </div>
+                    <Button
+                      onClick={() =>
+                        openModal(
+                          "Tambah Program",
+                          <CommunityProgramForm onCancel={closeModal} />
+                        )
+                      }
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Tambah Program
+                    </Button>
+                  </div>
                 </div>
-                <div className="px-6 pb-6">
-                  <div className="flex flex-col gap-3">
+                <div className="p-8">
+                  <div className="grid gap-4">
                     {isCommunityProgramsLoading ? (
-                      <div className="text-gray-500">
-                        Memuat data program...
+                      <div className="flex items-center justify-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+                        <span className="ml-3 text-gray-600">
+                          Memuat data program...
+                        </span>
                       </div>
                     ) : communityPrograms.length === 0 ? (
-                      <div className="text-gray-500">Belum ada program.</div>
+                      <div className="text-center py-12">
+                        <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-500 text-lg">
+                          Belum ada program komunitas
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          Klik tombol "Tambah Program" untuk menambahkan program
+                          baru
+                        </p>
+                      </div>
                     ) : (
                       communityPrograms.map((program) => (
                         <div
                           key={program.id}
-                          className="flex items-center justify-between bg-emerald-50 rounded-lg px-4 py-2"
+                          className="flex items-center justify-between bg-orange-50 rounded-lg px-4 py-3 hover:bg-orange-100 transition-colors"
                         >
-                          <div>
-                            <div className="font-semibold">{program.title}</div>
-                            <div className="text-xs text-gray-600">
+                          <div className="flex-1">
+                            <div className="font-semibold text-gray-800">
+                              {program.title}
+                            </div>
+                            <div className="text-xs text-gray-600 mt-1">
                               {program.description}
                             </div>
                           </div>
@@ -711,21 +981,25 @@ const AdminDashboard = () => {
                                   "Edit Program",
                                   <CommunityProgramForm
                                     program={program}
-                                    onSubmit={handleSubmit}
                                     onCancel={closeModal}
                                   />
                                 )
                               }
+                              className="bg-blue-500 hover:bg-blue-600 text-white border border-blue-600"
                             >
+                              <Pencil className="w-4 h-4 mr-1" />
                               Edit
                             </Button>
+
                             <Button
                               size="sm"
                               variant="destructive"
                               onClick={() =>
-                                handleDeleteCommunityProgram(program.id)
+                                handleDeleteCommunityProgram(communityPrograms.id, program.title)
                               }
+                              className="hover:bg-red-600"
                             >
+                              <Trash2 className="w-4 h-4" />
                               Hapus
                             </Button>
                           </div>
@@ -737,41 +1011,62 @@ const AdminDashboard = () => {
               </div>
             )}
             {selectedMenu === "kkn" && (
-              <div className="bg-white/90 rounded-2xl p-0">
-                <div className="flex flex-row items-center justify-between px-6 pt-6 pb-2">
-                  <h2 className="text-xl font-bold">Program KKN</h2>
-                  <Button
-                    onClick={() =>
-                      openModal(
-                        "Tambah Program KKN",
-                        <KKNProgramForm
-                          onSubmit={handleSubmit}
-                          onCancel={closeModal}
-                        />
-                      )
-                    }
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Tambah Program KKN
-                  </Button>
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden">
+                <div className="bg-gradient-to-r from-cyan-500 to-blue-500 px-8 py-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <GraduationCap className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white">
+                        Program KKN
+                      </h2>
+                    </div>
+                    <Button
+                      onClick={() =>
+                        openModal(
+                          "Tambah Program KKN",
+                          <KKNProgramForm onCancel={closeModal} />
+                        )
+                      }
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Tambah Program KKN
+                    </Button>
+                  </div>
                 </div>
-                <div className="px-6 pb-6">
-                  <div className="flex flex-col gap-3">
+                <div className="p-8">
+                  <div className="grid gap-4">
                     {isKKNProgramsLoading ? (
-                      <div className="text-gray-500">Memuat data KKN...</div>
+                      <div className="flex items-center justify-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500"></div>
+                        <span className="ml-3 text-gray-600">
+                          Memuat data KKN...
+                        </span>
+                      </div>
                     ) : kknPrograms.length === 0 ? (
-                      <div className="text-gray-500">
-                        Belum ada program KKN.
+                      <div className="text-center py-12">
+                        <GraduationCap className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-500 text-lg">
+                          Belum ada program KKN
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          Klik tombol "Tambah Program KKN" untuk menambahkan
+                          program baru
+                        </p>
                       </div>
                     ) : (
                       kknPrograms.map((program) => (
                         <div
                           key={program.id}
-                          className="flex items-center justify-between bg-emerald-50 rounded-lg px-4 py-2"
+                          className="flex items-center justify-between bg-cyan-50 rounded-lg px-4 py-3 hover:bg-cyan-100 transition-colors"
                         >
-                          <div>
-                            <div className="font-semibold">{program.title}</div>
-                            <div className="text-xs text-gray-600">
+                          <div className="flex-1">
+                            <div className="font-semibold text-gray-800">
+                              {program.title}
+                            </div>
+                            <div className="text-xs text-gray-600 mt-1">
                               {program.period}
                             </div>
                           </div>
@@ -784,19 +1079,22 @@ const AdminDashboard = () => {
                                   "Edit KKN",
                                   <KKNProgramForm
                                     program={program}
-                                    onSubmit={handleSubmit}
                                     onCancel={closeModal}
                                   />
                                 )
                               }
+                              className="bg-blue-500 hover:bg-blue-600 text-white border border-blue-600"
                             >
+                              <Pencil className="w-4 h-4" />
                               Edit
                             </Button>
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => handleDeleteKKNProgram(program.id)}
+                              onClick={() => handleDeleteKKNProgram(kknPrograms.id, program.title)}
+                              className="hover:bg-red-600"
                             >
+                              <Trash2 className="w-4 h-4" />
                               Hapus
                             </Button>
                           </div>
@@ -808,66 +1106,89 @@ const AdminDashboard = () => {
               </div>
             )}
             {selectedMenu === "statistics" && (
-              <div className="bg-white/90 rounded-2xl p-0">
-                <div className="flex flex-row items-center justify-between px-6 pt-6 pb-2">
-                  <h2 className="text-xl font-bold">Statistik Desa</h2>
-                  <Button
-                    onClick={() =>
-                      openModal(
-                        "Tambah Statistik",
-                        <VillageStatisticForm
-                          onSubmit={handleSubmit}
-                          onCancel={closeModal}
-                        />
-                      )
-                    }
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Tambah Statistik
-                  </Button>
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden">
+                <div className="bg-gradient-to-r from-emerald-500 to-green-500 px-8 py-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <BarChart3 className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white">
+                        Statistik Desa
+                      </h2>
+                    </div>
+                    <Button
+                      onClick={() =>
+                        openModal(
+                          "Tambah Statistik",
+                          <VillageStatisticForm onCancel={closeModal} />
+                        )
+                      }
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Tambah Statistik
+                    </Button>
+                  </div>
                 </div>
-                <div className="px-6 pb-6">
-                  <div className="flex flex-col gap-3">
+                <div className="p-8">
+                  <div className="grid gap-4">
                     {isStatisticsLoading ? (
-                      <div className="text-gray-500">
-                        Memuat data statistik...
+                      <div className="flex items-center justify-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+                        <span className="ml-3 text-gray-600">
+                          Memuat data statistik...
+                        </span>
                       </div>
                     ) : statistics.length === 0 ? (
-                      <div className="text-gray-500">Belum ada statistik.</div>
+                      <div className="text-center py-12">
+                        <BarChart3 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-500 text-lg">
+                          Belum ada statistik
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          Klik tombol "Tambah Statistik" untuk menambahkan
+                          statistik baru
+                        </p>
+                      </div>
                     ) : (
                       statistics.map((stat) => (
                         <div
                           key={stat.id}
-                          className="flex items-center justify-between bg-emerald-50 rounded-lg px-4 py-2"
+                          className="flex items-center justify-between bg-emerald-50 rounded-lg px-4 py-3 hover:bg-emerald-100 transition-colors"
                         >
-                          <div>
-                            <div className="font-semibold">{stat.label}</div>
-                            <div className="text-xs text-gray-600">
+                          <div className="flex-1">
+                            <div className="font-semibold text-gray-800">
+                              {stat.label}
+                            </div>
+                            <div className="text-xs text-gray-600 mt-1">
                               {stat.value}
                             </div>
                           </div>
                           <div className="flex gap-2">
                             <Button
-                              size="sm"
-                              variant="outline"
                               onClick={() =>
                                 openModal(
                                   "Edit Statistik",
                                   <VillageStatisticForm
-                                    statistic={stat}
-                                    onSubmit={handleSubmit}
+                                    statistic={stat} // <-- kirim data yang akan diedit
                                     onCancel={closeModal}
                                   />
                                 )
                               }
+                              className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-700 shadow"
                             >
+                              <Pencil className="w-4 h-4 mr-2" />
                               Edit
                             </Button>
+
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => handleDeleteStatistic(stat.id)}
+                              onClick={() => handleDeleteStatistic(stat.id, stat.label)}
+                              className="hover:bg-red-600"
                             >
+                              <Trash2 className="w-4 h-4 mr-2" />
                               Hapus
                             </Button>
                           </div>
@@ -879,43 +1200,65 @@ const AdminDashboard = () => {
               </div>
             )}
             {selectedMenu === "achievements" && (
-              <div className="bg-white/90 rounded-2xl p-0">
-                <div className="flex flex-row items-center justify-between px-6 pt-6 pb-2">
-                  <h2 className="text-xl font-bold">Prestasi Desa</h2>
-                  <Button
-                    onClick={() =>
-                      openModal(
-                        "Tambah Prestasi",
-                        <VillageAchievementForm
-                          onSubmit={handleSubmit}
-                          onCancel={closeModal}
-                        />
-                      )
-                    }
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Tambah Prestasi
-                  </Button>
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden">
+                <div className="bg-gradient-to-r from-yellow-500 to-orange-500 px-8 py-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <Trophy className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white">
+                        Prestasi Desa
+                      </h2>
+                    </div>
+                    <Button
+                      onClick={() =>
+                        openModal(
+                          "Tambah Prestasi",
+                          <VillageAchievementForm
+                            onSubmit={handleSubmit}
+                            onCancel={closeModal}
+                          />
+                        )
+                      }
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Tambah Prestasi
+                    </Button>
+                  </div>
                 </div>
-                <div className="px-6 pb-6">
-                  <div className="flex flex-col gap-3">
+                <div className="p-8">
+                  <div className="grid gap-4">
                     {isAchievementsLoading ? (
-                      <div className="text-gray-500">
-                        Memuat data prestasi...
+                      <div className="flex items-center justify-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>
+                        <span className="ml-3 text-gray-600">
+                          Memuat data prestasi...
+                        </span>
                       </div>
                     ) : achievements.length === 0 ? (
-                      <div className="text-gray-500">Belum ada prestasi.</div>
+                      <div className="text-center py-12">
+                        <Trophy className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-500 text-lg">
+                          Belum ada prestasi
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          Klik tombol "Tambah Prestasi" untuk menambahkan
+                          prestasi baru
+                        </p>
+                      </div>
                     ) : (
                       achievements.map((achievement) => (
                         <div
                           key={achievement.id}
-                          className="flex items-center justify-between bg-emerald-50 rounded-lg px-4 py-2"
+                          className="flex items-center justify-between bg-yellow-50 rounded-lg px-4 py-3 hover:bg-yellow-100 transition-colors"
                         >
-                          <div>
-                            <div className="font-semibold">
+                          <div className="flex-1">
+                            <div className="font-semibold text-gray-800">
                               {achievement.title}
                             </div>
-                            <div className="text-xs text-gray-600">
+                            <div className="text-xs text-gray-600 mt-1">
                               {achievement.description}
                             </div>
                           </div>
@@ -933,7 +1276,9 @@ const AdminDashboard = () => {
                                   />
                                 )
                               }
+                              className="bg-blue-500 hover:bg-blue-600 text-white border border-blue-600"
                             >
+                              <Pencil className="w-4 h-4" />
                               Edit
                             </Button>
                             <Button
@@ -942,7 +1287,9 @@ const AdminDashboard = () => {
                               onClick={() =>
                                 handleDeleteAchievement(achievement.id)
                               }
+                              className="hover:bg-red-600"
                             >
+                              <Trash2 className="w-4 h-4" />
                               Hapus
                             </Button>
                           </div>
@@ -968,31 +1315,85 @@ const AdminDashboard = () => {
             {modalContent}
           </div>
         </Modal>
-        {/* Modal Konfirmasi Logout */}
         <Modal
-          isOpen={showLogoutModal}
-          onClose={() => setShowLogoutModal(false)}
-          title="Konfirmasi Logout"
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          title=""
+          size="sm"
         >
-          <div className="py-4 max-h-[80vh] overflow-y-auto custom-modal-scrollbar">
-            <p className="mb-6 text-gray-700">
-              Apakah Anda yakin ingin logout?
-            </p>
-            <div className="flex justify-end gap-2">
+          <div className="py-6 px-2">
+            {/* Icon dan Header */}
+            <div className="flex flex-col items-center text-center mb-6">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <Trash2 className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {deleteModalData.title}
+              </h3>
+              <p className="text-gray-600">{deleteModalData.message}</p>
+              <div className="mt-3 px-3 py-2 bg-red-50 rounded-lg border border-red-200">
+                <p className="text-sm text-red-700">
+                  ⚠️ Tindakan ini tidak dapat dibatalkan
+                </p>
+              </div>
+            </div>
+
+            {/* Tombol Aksi */}
+            <div className="flex gap-3 justify-center">
               <Button
                 variant="outline"
-                onClick={() => setShowLogoutModal(false)}
+                onClick={() => setShowDeleteModal(false)}
+                className="px-6 py-2 border-gray-300 hover:bg-gray-50"
               >
                 Batal
               </Button>
               <Button
-                className="bg-red-600 hover:bg-red-700 text-white"
+                onClick={handleConfirmDelete}
+                className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-500/25"
+              >
+                Ya, Hapus
+              </Button>
+            </div>
+          </div>
+        </Modal>
+        {/* Modal Konfirmasi Logout */}
+        <Modal
+          isOpen={showLogoutModal}
+          onClose={() => setShowLogoutModal(false)}
+          title=""
+          size="sm"
+        >
+          <div className="py-6 px-2">
+            {/* Icon dan Header */}
+            <div className="flex flex-col items-center text-center mb-6">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <LogOut className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Konfirmasi Logout
+              </h3>
+              <p className="text-gray-600">
+                Apakah Anda yakin ingin keluar dari dashboard admin?
+              </p>
+            </div>
+
+            {/* Tombol Aksi */}
+            <div className="flex gap-3 justify-center">
+              <Button
+                variant="outline"
+                onClick={() => setShowLogoutModal(false)}
+                className="px-6 py-2 border-gray-300 hover:bg-gray-50"
+              >
+                Batal
+              </Button>
+              <Button
                 onClick={() => {
                   setShowLogoutModal(false);
                   logout();
                 }}
+                className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-500/25"
               >
-                Logout
+                Ya, Logout
               </Button>
             </div>
           </div>
