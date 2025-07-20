@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Bell, ChevronUp, ChevronDown } from "lucide-react";
+import { supabase } from "../integrations/supabase/client"; // Adjust the import path as necessary
 
 interface HeaderProps {
   activeSection: string;
@@ -39,7 +40,6 @@ const Header = ({ activeSection, setActiveSection }: HeaderProps) => {
     });
   };
 
-  // Fetch data from Supabase
   useEffect(() => {
     const fetchAnnouncements = async () => {
       const { data, error } = await supabase
@@ -48,9 +48,10 @@ const Header = ({ activeSection, setActiveSection }: HeaderProps) => {
         .order("date", { ascending: false });
 
       if (error) {
-        console.error("Error fetching announcements:", error.message);
+        console.error("Error fetching announcements:", error.message || error);
       } else {
-        setAnnouncements(data || []);
+        console.log("Fetched data:", data);
+
       }
     };
 
@@ -98,7 +99,9 @@ const Header = ({ activeSection, setActiveSection }: HeaderProps) => {
                 className="w-full h-full object-cover rounded-full"
               />
             </div>
-            <h2 className="text-black text-lg sm:text-xl lg:text-2xl font-bold">Desa Ngasem</h2>
+            <h2 className="text-black text-lg sm:text-xl lg:text-2xl font-bold">
+              Desa Ngasem
+            </h2>
           </div>
 
           {/* Desktop Navigation */}
@@ -161,7 +164,11 @@ const Header = ({ activeSection, setActiveSection }: HeaderProps) => {
                         onClick={() => setShowAnnouncements(!showAnnouncements)}
                         className="flex items-center gap-1 text-sm text-blue-500 hover:underline"
                       >
-                        {showAnnouncements ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        {showAnnouncements ? (
+                          <ChevronUp size={16} />
+                        ) : (
+                          <ChevronDown size={16} />
+                        )}
                       </button>
                     </div>
 
@@ -177,12 +184,16 @@ const Header = ({ activeSection, setActiveSection }: HeaderProps) => {
                             }`}
                           >
                             <div className="flex justify-between items-start mb-0.5">
-                              <h4 className="font-semibold text-gray-800">{announcement.title}</h4>
+                              <h4 className="font-semibold text-gray-800">
+                                {announcement.title}
+                              </h4>
                               <span className="text-[10px] text-gray-500">
                                 {formatDate(announcement.date)}
                               </span>
                             </div>
-                            <p className="text-gray-700">{announcement.content}</p>
+                            <p className="text-gray-700">
+                              {announcement.content}
+                            </p>
                             {announcement.urgent && (
                               <span className="inline-block mt-1 px-1.5 py-0.5 bg-red-500 text-white text-[9px] rounded-full">
                                 URGENT
@@ -198,9 +209,41 @@ const Header = ({ activeSection, setActiveSection }: HeaderProps) => {
             </div>
           </div>
 
-          {/* TODO: Tambahkan bagian lg:xl:hidden, mobile, dsb. jika butuh */}
+          {/* Mobile Menu Button */}
+          <div className="xl:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 rounded-xl hover:bg-stone-100 transition-all duration-300"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Mobile/Tablet Navigation */}
+      {isMenuOpen && (
+        <div className="xl:hidden bg-white border-t border-stone-200 shadow-md">
+          <nav className="flex flex-col p-4 space-y-2">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveSection(item.id);
+                  setIsMenuOpen(false); // Close after click
+                }}
+                className={`text-left px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  activeSection === item.id
+                    ? "bg-gradient-to-r from-emerald-600 to-emerald-400 text-white"
+                    : "text-stone-700 hover:bg-emerald-100"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+      )}
     </header>
   );
 };

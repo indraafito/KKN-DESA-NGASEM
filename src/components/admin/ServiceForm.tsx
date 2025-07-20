@@ -10,16 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Tables, TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
+import {
+  Tables,
+  TablesInsert,
+  TablesUpdate,
+} from "@/integrations/supabase/types";
 
 type Service = Tables<"services">;
 type ServiceInsert = TablesInsert<"services">;
@@ -44,7 +43,9 @@ const ServiceForm = ({ service, onCancel }: ServiceFormProps) => {
   });
 
   const mutation = useMutation({
-    mutationFn: async (data: ServiceInsert | (ServiceUpdate & { id: string })) => {
+    mutationFn: async (
+      data: ServiceInsert | (ServiceUpdate & { id: string })
+    ) => {
       if ("id" in data) {
         const { id, ...updateData } = data;
         const { error } = await supabase
@@ -64,7 +65,9 @@ const ServiceForm = ({ service, onCancel }: ServiceFormProps) => {
 
       toast({
         title: "Berhasil!",
-        description: service ? "Layanan berhasil diperbarui" : "Layanan baru berhasil ditambahkan",
+        description: service
+          ? "Layanan berhasil diperbarui"
+          : "Layanan baru berhasil ditambahkan",
       });
 
       onCancel(); // ✅ tutup modal otomatis
@@ -72,7 +75,8 @@ const ServiceForm = ({ service, onCancel }: ServiceFormProps) => {
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.message || "Terjadi kesalahan saat menyimpan layanan",
+        description:
+          error.message || "Terjadi kesalahan saat menyimpan layanan",
         variant: "destructive",
       });
     },
@@ -109,7 +113,9 @@ const ServiceForm = ({ service, onCancel }: ServiceFormProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{service ? "Edit Layanan" : "Tambah Layanan Baru"}</CardTitle>
+        <CardTitle>
+          {service ? "Edit Layanan" : "Tambah Layanan Baru"}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -170,11 +176,26 @@ const ServiceForm = ({ service, onCancel }: ServiceFormProps) => {
                 </SelectContent>
               </Select>
             </div>
+
+            <div className="md:col-span-2">
+              <Label htmlFor="link">Link Google Form</Label>
+              <Input
+                id="link"
+                type="url"
+                value={formData.link}
+                onChange={(e) => handleChange("link", e.target.value)}
+                placeholder="https://forms.gle/..."
+              />
+            </div>
           </div>
 
           <div className="flex gap-2 pt-4">
             <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? "Menyimpan..." : service ? "Update" : "Simpan"}
+              {mutation.isPending
+                ? "Menyimpan..."
+                : service
+                ? "Update"
+                : "Simpan"}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               Batal
