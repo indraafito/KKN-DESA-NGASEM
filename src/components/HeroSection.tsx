@@ -102,24 +102,21 @@ const HeroSection = () => {
             </div>
 
             {/* Video */}
-            <div
-              className="animate-scale-in"
-              style={{ animationDelay: "0.6s" }}
-            >
-              <Card className="overflow-hidden bg-white/20 backdrop-blur-md border border-white/10 rounded-xl shadow-xl transition-all duration-300">
-                <CardContent className="p-6">
-                  <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
+            <div className="w-full">
+              <Card className="w-full overflow-hidden bg-white/20 backdrop-blur-md border border-white/10 shadow-none px-0">
+                <CardContent className="p-0">
+                  <div className="relative aspect-video w-full overflow-hidden rounded-xl">
                     {profile?.video_url ? (
                       <iframe
                         src={getYouTubeEmbedUrl(profile.video_url)}
                         title="Video Profil Desa Ngasem"
-                        className="w-full h-full"
+                        className="absolute top-0 left-0 w-full h-full rounded-xl"
                         allowFullScreen
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       />
                     ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/20 to-stone-600/20 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/20 to-stone-600/20 flex items-center justify-center rounded-xl">
                         <div className="text-center text-white">
                           <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
                             <svg
