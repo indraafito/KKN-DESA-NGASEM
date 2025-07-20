@@ -2,7 +2,16 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNews } from "@/hooks/useNews";
-import { ChevronUp, ChevronDown, Search, Calendar, Tag, ArrowRight, Clock, TrendingUp } from "lucide-react";
+import {
+  ChevronUp,
+  ChevronDown,
+  Search,
+  Calendar,
+  Tag,
+  ArrowRight,
+  Clock,
+  TrendingUp,
+} from "lucide-react";
 
 const NewsSection = () => {
   const { data: news = [], isLoading } = useNews();
@@ -32,14 +41,18 @@ const NewsSection = () => {
 
   const filteredNews = news
     .filter((article) => article.status === "published")
-    .filter((article) =>
-      article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      article.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+    .filter(
+      (article) =>
+        article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        article.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .filter((article) =>
       selectedCategory === "all" ? true : article.category === selectedCategory
     )
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    )
     .slice(0, showMore ? 12 : 6);
 
   const allCategories = Array.from(new Set(news.map((n) => n.category)));
@@ -91,12 +104,12 @@ const NewsSection = () => {
             <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-green-400 to-blue-500 rounded-full -translate-x-20 -translate-y-20"></div>
             <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full translate-x-16 translate-y-16"></div>
           </div>
-          
+
           <div className="relative z-10">
             <h3 className="text-lg font-semibold text-gray-800 mb-6 text-center">
               Temukan Berita yang Anda Cari
             </h3>
-            
+
             <div className="flex flex-col lg:flex-row items-center gap-6">
               {/* Search Input */}
               <div className="relative w-full lg:flex-1 group">
@@ -151,7 +164,7 @@ const NewsSection = () => {
             <article
               key={article.id}
               className={`bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 h-full flex flex-col group ${
-                index === 0 ? 'md:col-span-2 lg:col-span-1' : ''
+                index === 0 ? "md:col-span-2 lg:col-span-1" : ""
               }`}
             >
               <div className="p-6 flex flex-col h-full">
@@ -170,12 +183,23 @@ const NewsSection = () => {
                   </div>
                 </div>
 
-                {/* Icon */}
-                <div className="text-center mb-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-2xl flex items-center justify-center text-white text-2xl mx-auto group-hover:scale-110 transition-transform duration-300">
-                    📰
+                {/* Gambar Berita */}
+                {article.image_url ? (
+                  <div className="mb-4 rounded-xl overflow-hidden h-48">
+                    <img
+                      src={article.image_url}
+                      alt={article.title}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
                   </div>
-                </div>
+                ) : (
+                  // fallback jika tidak ada gambar
+                  <div className="text-center mb-4">
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-2xl flex items-center justify-center text-white text-2xl mx-auto group-hover:scale-110 transition-transform duration-300">
+                      📰
+                    </div>
+                  </div>
+                )}
 
                 {/* Content */}
                 <h3 className="text-lg font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-green-600 transition-colors">
@@ -190,8 +214,7 @@ const NewsSection = () => {
                 <div className="mt-auto pt-4 border-t border-gray-100">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-1 text-xs text-gray-500">
-                      <Clock className="w-3 h-3" />
-                      5 min read
+                      <Clock className="w-3 h-3" />5 min read
                     </div>
                     <div className="flex items-center gap-1 text-xs text-gray-500">
                       <TrendingUp className="w-3 h-3" />
