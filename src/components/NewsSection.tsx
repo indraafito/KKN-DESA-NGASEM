@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNews } from "@/hooks/useNews";
@@ -18,6 +19,7 @@ const NewsSection = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [showMore, setShowMore] = useState(false);
+  const navigate = useNavigate(); // ✅ Tambahkan ini
 
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -99,19 +101,15 @@ const NewsSection = () => {
 
         {/* Search & Filter */}
         <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8 mb-12 relative overflow-hidden">
-          {/* Background Pattern */}
           <div className="absolute inset-0 opacity-5">
             <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-green-400 to-blue-500 rounded-full -translate-x-20 -translate-y-20"></div>
             <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full translate-x-16 translate-y-16"></div>
           </div>
-
           <div className="relative z-10">
             <h3 className="text-lg font-semibold text-gray-800 mb-6 text-center">
               Temukan Berita yang Anda Cari
             </h3>
-
             <div className="flex flex-col lg:flex-row items-center gap-6">
-              {/* Search Input */}
               <div className="relative w-full lg:flex-1 group">
                 <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
                 <div className="relative bg-white rounded-2xl shadow-lg border border-gray-100 group-hover:shadow-xl transition-all duration-300">
@@ -134,7 +132,6 @@ const NewsSection = () => {
                 </div>
               </div>
 
-              {/* Category Filter */}
               <div className="relative w-full lg:w-80 group">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
                 <div className="relative bg-white rounded-2xl shadow-lg border border-gray-100 group-hover:shadow-xl transition-all duration-300">
@@ -168,7 +165,6 @@ const NewsSection = () => {
               }`}
             >
               <div className="p-6 flex flex-col h-full">
-                {/* Header */}
                 <div className="flex items-center justify-between mb-4">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium border ${getPriorityColor(
@@ -183,7 +179,6 @@ const NewsSection = () => {
                   </div>
                 </div>
 
-                {/* Gambar Berita */}
                 {article.image_url ? (
                   <div className="mb-4 rounded-xl overflow-hidden h-48">
                     <img
@@ -193,7 +188,6 @@ const NewsSection = () => {
                     />
                   </div>
                 ) : (
-                  // fallback jika tidak ada gambar
                   <div className="text-center mb-4">
                     <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-2xl flex items-center justify-center text-white text-2xl mx-auto group-hover:scale-110 transition-transform duration-300">
                       📰
@@ -201,7 +195,6 @@ const NewsSection = () => {
                   </div>
                 )}
 
-                {/* Content */}
                 <h3 className="text-lg font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-green-600 transition-colors">
                   {article.title}
                 </h3>
@@ -210,7 +203,6 @@ const NewsSection = () => {
                   {article.excerpt}
                 </p>
 
-                {/* Footer */}
                 <div className="mt-auto pt-4 border-t border-gray-100">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-1 text-xs text-gray-500">
@@ -221,7 +213,10 @@ const NewsSection = () => {
                       Trending
                     </div>
                   </div>
-                  <Button className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white rounded-xl group-hover:shadow-lg transition-all duration-300">
+                  <Button
+                    onClick={() => navigate(`/readmorenews/${article.id}`)}
+                    className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white rounded-xl group-hover:shadow-lg transition-all duration-300"
+                  >
                     <span>Baca Selengkapnya</span>
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>

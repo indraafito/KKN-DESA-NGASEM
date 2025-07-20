@@ -22,6 +22,26 @@ export const useNews = () => {
   });
 };
 
+export type NewsItem = {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+  category: string;
+  priority?: string;
+  image_url?: string;
+};
+
+export const getAllNews = async (): Promise<NewsItem[]> => {
+  const { data, error } = await supabase
+    .from("news")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return data ?? [];
+};
+
 export const useCreateNews = () => {
   const queryClient = useQueryClient();
   

@@ -28,7 +28,7 @@ const Header = ({ activeSection, setActiveSection }: HeaderProps) => {
     { id: "services", label: "Layanan" },
     { id: "info", label: "Info Tambahan" },
     { id: "facilities", label: "Sarana & Prasarana" },
-    { id: "news", label: "Berita & Update" },
+     { id: "news", label: "Berita & Update", path: "/news" },
   ];
 
   const formatDate = (dateString: string) => {
