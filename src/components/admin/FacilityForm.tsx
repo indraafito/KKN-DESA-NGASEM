@@ -73,9 +73,6 @@ const FacilityForm = ({ facility, onCancel }: FacilityFormProps) => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{facility ? 'Edit Fasilitas' : 'Tambah Fasilitas'}</CardTitle>
-      </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

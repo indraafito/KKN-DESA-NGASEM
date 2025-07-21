@@ -227,9 +227,6 @@ const KKNProgramForm = ({ program, onCancel, onSuccess }: KKNProgramFormProps) =
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{program ? "Edit Program KKN" : "Tambah Program KKN"}</CardTitle>
-      </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

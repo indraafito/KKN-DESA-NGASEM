@@ -85,11 +85,8 @@ const CommunityProgramForm = ({ program, onCancel }: CommunityProgramFormProps) 
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{program ? "Edit Program" : "Tambah Program"}</CardTitle>
-      </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-2">
           <div>
             <Label htmlFor="title">Nama Program</Label>
             <Input

@@ -95,9 +95,6 @@ const NewsForm = ({ news, onCancel }: NewsFormProps) => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{news ? "Edit Berita" : "Tambah Berita Baru"}</CardTitle>
-      </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

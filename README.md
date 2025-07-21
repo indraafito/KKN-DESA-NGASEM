@@ -1,73 +1,37 @@
-# Welcome to your Lovable project
+# 🌾 Website Desa Ngasem
 
-## Project info
+Sebuah proyek website modern untuk mendukung transparansi dan pelayanan digital di Desa Ngasem. Dibuat dengan teknologi React, Tailwind CSS, dan Supabase sebagai backend.
 
-**URL**: https://lovable.dev/projects/93ea2844-090d-4576-b2aa-2fa131b2ef03
+## 🚀 Fitur Unggulan
 
-## How can I edit this code?
+- 🔒 **Login Admin** — akses pengelolaan data untuk perangkat desa.
+- 🏘️ **Data Fasilitas Desa** — informasi real-time tentang fasilitas umum.
+- 📊 **Program Masyarakat** — daftar program yang sedang dan akan dijalankan.
+- 📈 **Statistik Desa** — visualisasi data penduduk, ekonomi, dan lainnya.
+- 🌐 **Tampilan Responsif** — kompatibel di semua perangkat.
 
-There are several ways of editing your application.
+## 🛠️ Teknologi yang Digunakan
 
-**Use Lovable**
+- [React](https://react.dev/) — pustaka UI berbasis komponen
+- [Vite](https://vitejs.dev/) — bundler modern super cepat
+- [Tailwind CSS](https://tailwindcss.com/) — utilitas styling responsif
+- [shadcn/ui](https://ui.shadcn.com/) — komponen UI siap pakai
+- [Supabase](https://supabase.com/) — backend open-source (Auth, Database, Storage)
+- [TypeScript](https://www.typescriptlang.org/) — JavaScript dengan tipe statis
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/93ea2844-090d-4576-b2aa-2fa131b2ef03) and start prompting.
+## 📦 Instalasi Lokal
 
-Changes made via Lovable will be committed automatically to this repo.
+Pastikan sudah menginstal **Node.js** dan **npm**.
 
-**Use your preferred IDE**
+```bash
+# 1. Clone repositori
+git clone https://github.com/indraafito/KKN-DESA-NGASEM.git
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+# 2. Masuk ke direktori proyek
+cd KKN-DESA-NGASEM
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+# 3. Install dependensi
+npm install
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 4. Jalankan server pengembangan
 npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/93ea2844-090d-4576-b2aa-2fa131b2ef03) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)

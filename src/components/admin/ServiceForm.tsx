@@ -112,11 +112,6 @@ const ServiceForm = ({ service, onCancel }: ServiceFormProps) => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>
-          {service ? "Edit Layanan" : "Tambah Layanan Baru"}
-        </CardTitle>
-      </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
