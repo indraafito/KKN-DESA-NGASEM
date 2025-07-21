@@ -189,6 +189,7 @@ const KKNProgramForm = ({ program, onCancel, onSuccess }: KKNProgramFormProps) =
         description: `Program KKN berhasil ${program ? "diperbarui" : "ditambahkan"}.`,
       });
 
+      onCancel();
       onSuccess?.();
     } catch (error: any) {
       console.error("Submit error:", error);

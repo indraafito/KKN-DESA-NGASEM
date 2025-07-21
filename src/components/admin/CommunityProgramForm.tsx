@@ -48,35 +48,36 @@ const CommunityProgramForm = ({ program, onCancel }: CommunityProgramFormProps) 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      if (!formData.title.trim() || !formData.schedule.trim()) {
-        toast({
-          title: "Gagal",
-          description: "Nama program dan jadwal harus diisi.",
-          variant: "destructive",
-        });
-        return;z
-      }
+    if (!formData.title.trim() || !formData.schedule.trim()) {
+      toast.toast({
+        title: "Gagal",
+        description: "Nama program dan jadwal harus diisi.",
+        variant: "destructive",
+      });
+      return;
+    }
 
+    try {
       if (program) {
         await updateMutation.mutateAsync({ id: program.id, ...formData });
-        toast({
+        toast.toast({
           title: "Berhasil",
           description: "Program berhasil diperbarui.",
         });
       } else {
         await createMutation.mutateAsync(formData);
-        toast({
+        toast.toast({
           title: "Berhasil",
           description: "Program berhasil ditambahkan.",
         });
       }
 
-      onCancel(); // TUTUP MODAL SAAT BERHASIL
+      onCancel(); // ✅ Tutup modal setelah berhasil
     } catch (err: any) {
-      toast({
-        title: "Terjadi kesalahan",
-        description: err.message || "Gagal menyimpan data.",
+      console.error("Gagal menyimpan:", err);
+      toast.toast({
+        title: "Gagal Menyimpan",
+        description: err?.message || "Terjadi kesalahan saat menyimpan program.",
         variant: "destructive",
       });
     }
@@ -145,7 +146,13 @@ const CommunityProgramForm = ({ program, onCancel }: CommunityProgramFormProps) 
 
           <div className="flex gap-2 justify-end">
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Menyimpan..." : "Simpan"}
+              {program
+                ? isLoading
+                  ? "Menyimpan Perubahan..."
+                  : "Simpan Perubahan"
+                : isLoading
+                ? "Menambahkan..."
+                : "Tambah Program"}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               Batal

@@ -370,15 +370,17 @@ const InfoSection = () => {
                               className="w-full flex-shrink-0 relative"
                             >
                               <img
-                                src={photo.url || photo}
+                                src={photo}
                                 alt={`${program.nama_proker} - Foto ${
                                   photoIndex + 1
                                 }`}
                                 className="w-full h-64 object-cover"
                                 onError={(e) => {
-                                  e.target.src = "/placeholder-image.jpg"; // Fallback image
+                                  e.currentTarget.src =
+                                    "/placeholder-image.jpg";
                                 }}
                               />
+
                               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                             </div>
                           ))}
