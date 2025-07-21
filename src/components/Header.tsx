@@ -139,7 +139,7 @@ const Header = ({ activeSection, setActiveSection }: HeaderProps) => {
                 )}
               </button>
 
-              {/* Notification Modal */}
+              {/* Notification Modal
               {showNotifications && (
                 <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-stone-200 z-50">
                   <div className="p-4">
@@ -205,7 +205,7 @@ const Header = ({ activeSection, setActiveSection }: HeaderProps) => {
                     )}
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
 
