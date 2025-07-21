@@ -112,42 +112,6 @@ export type Database = {
         }
         Relationships: []
       }
-      kkn_programs: {
-        Row: {
-          activities: string[] | null
-          created_at: string
-          description: string | null
-          id: string
-          participants: number | null
-          period: string
-          status: string | null
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          activities?: string[] | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          participants?: number | null
-          period: string
-          status?: string | null
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          activities?: string[] | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          participants?: number | null
-          period?: string
-          status?: string | null
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       news: {
         Row: {
           category: string | null
@@ -187,6 +151,36 @@ export type Database = {
         }
         Relationships: []
       }
+      kkn_programs: {
+        Row: {
+          id: string
+          nama_proker: string
+          deskripsi: string
+          tanggal: string
+          lokasi: string
+          photos: string[] | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          nama_proker: string
+          deskripsi: string
+          tanggal: string
+          lokasi: string
+          photos?: string[] | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          nama_proker?: string
+          deskripsi?: string
+          tanggal?: string
+          lokasi?: string
+          photos?: string[] | null
+          created_at?: string
+        }
+        Relationships: []
+      },
       service_applications: {
         Row: {
           applicant_address: string | null

@@ -1043,10 +1043,10 @@ const AdminDashboard = () => {
                         >
                           <div className="flex-1">
                             <div className="font-semibold text-gray-800">
-                              {program.title}
+                              {program.nama_proker}
                             </div>
                             <div className="text-xs text-gray-600 mt-1">
-                              {program.period}
+                              {program.tanggal}
                             </div>
                           </div>
                           <div className="flex gap-2">
@@ -1070,7 +1070,7 @@ const AdminDashboard = () => {
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => handleDeleteKKNProgram(program.id, program.title)}
+                              onClick={() => handleDeleteKKNProgram(program.id, program.nama_proker)}
                               className="hover:bg-red-600"
                             >
                               <Trash2 className="w-4 h-4" />
