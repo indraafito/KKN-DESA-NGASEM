@@ -114,10 +114,10 @@ const Modal = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with gradient background */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-gray-800 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-t-3xl">
+        <div className="flex items-center justify-between p-2 border-b border-gray-200/50 dark:border-gray-800 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-t-3xl">
           <h3
             id="modal-title"
-            className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2"
+            className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mx-4"
           >
             {title}
           </h3>
@@ -139,7 +139,7 @@ const Modal = ({
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-6 overflow-y-auto overscroll-contain">
+        <div className="flex-1 p-4 overflow-y-auto overscroll-contain">
           <div className="space-y-4">
             {children}
           </div>
@@ -147,7 +147,7 @@ const Modal = ({
 
         {/* Footer */}
         {footer && (
-          <div className="p-6 border-t border-gray-200/50 dark:border-gray-800 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-b-3xl">
+          <div className="border-t border-gray-200/50 dark:border-gray-800 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-b-3xl">
             {footer}
           </div>
         )}

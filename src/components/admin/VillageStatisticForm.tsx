@@ -247,10 +247,17 @@ const VillageStatisticForm = ({
             />
           </div>
 
-          <div className="flex gap-2 pt-4">
+          <div className="flex justify-end gap-2 pt-4">
             <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? "Menyimpan..." : "Simpan"}
+              {mutation.isPending
+                ? isEditMode
+                  ? "Menyimpan Perubahan..."
+                  : "Menambahkan..."
+                : isEditMode
+                ? "Perbarui"
+                : "Simpan"}
             </Button>
+
             <Button type="button" variant="outline" onClick={onCancel}>
               Batal
             </Button>

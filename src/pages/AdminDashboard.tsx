@@ -449,14 +449,6 @@ const AdminDashboard = () => {
                           </div>
                           <div className="flex flex-col space-y-1">
                             <span className="text-emerald-700 font-semibold">
-                              Photo URL
-                            </span>
-                            <span className="text-gray-900 font-medium bg-white/60 rounded-lg px-3 py-2 break-all">
-                              {villageProfile.photo_url || "-"}
-                            </span>
-                          </div>
-                          <div className="flex flex-col space-y-1">
-                            <span className="text-emerald-700 font-semibold">
                               Video URL
                             </span>
                             <span className="text-gray-900 font-medium bg-white/60 rounded-lg px-3 py-2 break-all">
@@ -498,7 +490,7 @@ const AdminDashboard = () => {
                     <Button
                       onClick={() =>
                         openModal(
-                          "Tambah Layanan",
+                          "Tambah Layanan Desa",
                           <ServiceForm onCancel={closeModal} />
                         )
                       }
@@ -559,7 +551,7 @@ const AdminDashboard = () => {
                                 size="sm"
                                 onClick={() =>
                                   openModal(
-                                    "Edit Layanan",
+                                    "Edit Layanan Desa",
                                     <ServiceForm
                                       service={service}
                                       onCancel={closeModal}
@@ -619,7 +611,7 @@ const AdminDashboard = () => {
                         <FileText className="w-5 h-5 text-white" />
                       </div>
                       <h2 className="text-2xl font-bold text-white">
-                        Berita & Pengumuman
+                        Berita
                       </h2>
                     </div>
                     <Button
@@ -753,10 +745,10 @@ const AdminDashboard = () => {
                           <div className="flex gap-2">
                             <Button
                               size="sm"
-                              className="bg-blue-500 text-white hover:bg-blue-600"
+                              className="bg-blue-600 text-white hover:bg-blue-700"
                               onClick={() =>
                                 openModal(
-                                  "Edit Perangkat",
+                                  "Edit Perangkat Desa",
                                   <VillageOfficialForm
                                     official={official}
                                     onCancel={closeModal}
@@ -800,7 +792,7 @@ const AdminDashboard = () => {
                     <Button
                       onClick={() =>
                         openModal(
-                          "Tambah Fasilitas",
+                          "Tambah Fasilitas Desa",
                           <FacilityForm onCancel={closeModal} />
                         )
                       }
@@ -859,14 +851,14 @@ const AdminDashboard = () => {
                                 size="sm"
                                 onClick={() =>
                                   openModal(
-                                    "Edit Fasilitas",
+                                    "Edit Fasilitas Desa",
                                     <FacilityForm
                                       facility={facility}
                                       onCancel={closeModal}
                                     />
                                   )
                                 }
-                                className="bg-blue-500 hover:bg-blue-600 text-white border border-blue-600"
+                                className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-600"
                               >
                                 <Pencil className="w-4 h-4" />
                                 Edit
@@ -906,7 +898,7 @@ const AdminDashboard = () => {
                     <Button
                       onClick={() =>
                         openModal(
-                          "Tambah Program",
+                          "Tambah Program Desa",
                           <CommunityProgramForm onCancel={closeModal} />
                         )
                       }
@@ -957,14 +949,14 @@ const AdminDashboard = () => {
                               variant="outline"
                               onClick={() =>
                                 openModal(
-                                  "Edit Program",
+                                  "Edit Program Desa",
                                   <CommunityProgramForm
                                     program={program}
                                     onCancel={closeModal}
                                   />
                                 )
                               }
-                              className="bg-blue-500 hover:bg-blue-600 text-white border border-blue-600"
+                              className="bg-blue-600 text-white hover:bg-blue-700 hover:text-white border border-blue-600"
                             >
                               <Pencil className="w-4 h-4 mr-1" />
                               Edit
@@ -1055,14 +1047,14 @@ const AdminDashboard = () => {
                               variant="outline"
                               onClick={() =>
                                 openModal(
-                                  "Edit KKN",
+                                  "Edit Program KKN",
                                   <KKNProgramForm
                                     program={program}
                                     onCancel={closeModal}
                                   />
                                 )
                               }
-                              className="bg-blue-500 hover:bg-blue-600 text-white border border-blue-600"
+                              className="bg-blue-600 hover:bg-blue-700 text-white border hover:text-white border-blue-600"
                             >
                               <Pencil className="w-4 h-4" />
                               Edit
@@ -1099,7 +1091,7 @@ const AdminDashboard = () => {
                     <Button
                       onClick={() =>
                         openModal(
-                          "Tambah Statistik",
+                          "Tambah Statistik Desa",
                           <VillageStatisticForm onCancel={closeModal} />
                         )
                       }
@@ -1148,7 +1140,7 @@ const AdminDashboard = () => {
                             <Button
                               onClick={() =>
                                 openModal(
-                                  "Edit Statistik",
+                                  "Edit Statistik Desa",
                                   <VillageStatisticForm
                                     statistic={stat} // <-- kirim data yang akan diedit
                                     onCancel={closeModal}

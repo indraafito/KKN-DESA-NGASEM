@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Tables } from '@/integrations/supabase/types';
+import { Tables } from "@/integrations/supabase/types";
 import { useCreateFacility, useUpdateFacility } from "@/hooks/useFacilities";
 
-type Facility = Tables<'facilities'>;
+type Facility = Tables<"facilities">;
 
 interface FacilityFormProps {
   facility?: Facility;
@@ -19,18 +19,18 @@ const FacilityForm = ({ facility, onCancel }: FacilityFormProps) => {
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
-    name: facility?.name || '',
-    description: facility?.description || '',
-    icon: facility?.icon || '',
-    lokasi: facility?.lokasi || '',     // link GMaps
-    alamat: facility?.alamat || '',     // teks alamat
+    name: facility?.name || "",
+    description: facility?.description || "",
+    icon: facility?.icon || "",
+    lokasi: facility?.lokasi || "", // link GMaps
+    alamat: facility?.alamat || "", // teks alamat
   });
 
   const createFacility = useCreateFacility();
   const updateFacility = useUpdateFacility();
 
   const handleChange = (field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -80,7 +80,7 @@ const FacilityForm = ({ facility, onCancel }: FacilityFormProps) => {
             <Input
               id="name"
               value={formData.name}
-              onChange={(e) => handleChange('name', e.target.value)}
+              onChange={(e) => handleChange("name", e.target.value)}
               required
             />
           </div>
@@ -90,7 +90,7 @@ const FacilityForm = ({ facility, onCancel }: FacilityFormProps) => {
             <Input
               id="icon"
               value={formData.icon}
-              onChange={(e) => handleChange('icon', e.target.value)}
+              onChange={(e) => handleChange("icon", e.target.value)}
               placeholder="Contoh: 🏛️"
             />
           </div>
@@ -100,7 +100,7 @@ const FacilityForm = ({ facility, onCancel }: FacilityFormProps) => {
             <Textarea
               id="description"
               value={formData.description}
-              onChange={(e) => handleChange('description', e.target.value)}
+              onChange={(e) => handleChange("description", e.target.value)}
               rows={3}
             />
           </div>
@@ -110,7 +110,7 @@ const FacilityForm = ({ facility, onCancel }: FacilityFormProps) => {
             <Input
               id="alamat"
               value={formData.alamat}
-              onChange={(e) => handleChange('alamat', e.target.value)}
+              onChange={(e) => handleChange("alamat", e.target.value)}
               placeholder="Contoh: Jl. Soekarno Hatta No.10"
             />
           </div>
@@ -120,15 +120,22 @@ const FacilityForm = ({ facility, onCancel }: FacilityFormProps) => {
             <Input
               id="lokasi"
               value={formData.lokasi}
-              onChange={(e) => handleChange('lokasi', e.target.value)}
+              onChange={(e) => handleChange("lokasi", e.target.value)}
               placeholder="https://maps.app.goo.gl/..."
             />
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex justify-end gap-2 pt-4">
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Menyimpan...' : 'Simpan'}
+              {isLoading
+                ? facility
+                  ? "Memperbarui..."
+                  : "Menyimpan..."
+                : facility
+                ? "Perbarui"
+                : "Simpan"}
             </Button>
+
             <Button type="button" variant="outline" onClick={onCancel}>
               Batal
             </Button>

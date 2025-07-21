@@ -25,7 +25,10 @@ interface CommunityProgramFormProps {
   onCancel: () => void; // untuk menutup modal
 }
 
-const CommunityProgramForm = ({ program, onCancel }: CommunityProgramFormProps) => {
+const CommunityProgramForm = ({
+  program,
+  onCancel,
+}: CommunityProgramFormProps) => {
   const toast = useToast();
 
   const createMutation = useCreateCommunityProgram();
@@ -77,7 +80,8 @@ const CommunityProgramForm = ({ program, onCancel }: CommunityProgramFormProps) 
       console.error("Gagal menyimpan:", err);
       toast.toast({
         title: "Gagal Menyimpan",
-        description: err?.message || "Terjadi kesalahan saat menyimpan program.",
+        description:
+          err?.message || "Terjadi kesalahan saat menyimpan program.",
         variant: "destructive",
       });
     }
@@ -143,14 +147,15 @@ const CommunityProgramForm = ({ program, onCancel }: CommunityProgramFormProps) 
 
           <div className="flex gap-2 justify-end">
             <Button type="submit" disabled={isLoading}>
-              {program
-                ? isLoading
+              {isLoading
+                ? program
                   ? "Menyimpan Perubahan..."
-                  : "Simpan Perubahan"
-                : isLoading
-                ? "Menambahkan..."
-                : "Tambah Program"}
+                  : "Menambahkan..."
+                : program
+                ? "Perbarui"
+                : "Simpan"}
             </Button>
+
             <Button type="button" variant="outline" onClick={onCancel}>
               Batal
             </Button>

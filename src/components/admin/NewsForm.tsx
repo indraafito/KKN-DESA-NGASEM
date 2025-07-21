@@ -10,12 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tables } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
 import { useCreateNews, useUpdateNews } from "@/hooks/useNews";
@@ -113,7 +108,7 @@ const NewsForm = ({ news, onCancel }: NewsFormProps) => {
               id="excerpt"
               value={formData.excerpt}
               onChange={(e) => handleChange("excerpt", e.target.value)}
-              rows={2}
+              rows={1}
               placeholder="Ringkasan singkat berita..."
             />
           </div>
@@ -131,7 +126,7 @@ const NewsForm = ({ news, onCancel }: NewsFormProps) => {
               id="content"
               value={formData.content}
               onChange={(e) => handleChange("content", e.target.value)}
-              rows={8}
+              rows={1}
               placeholder="Tulis isi berita lengkap di sini..."
             />
           </div>
@@ -192,9 +187,9 @@ const NewsForm = ({ news, onCancel }: NewsFormProps) => {
             </div>
           </div>
 
-          <div className="flex gap-2 pt-4">
+          <div className="flex justify-end gap-2 pt-4">
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Menyimpan..." : news ? "Update" : "Simpan"}
+              {isSubmitting ? "Menyimpan..." : news ? "Perbarui" : "Simpan"}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               Batal

@@ -184,12 +184,12 @@ const ServiceForm = ({ service, onCancel }: ServiceFormProps) => {
             </div>
           </div>
 
-          <div className="flex gap-2 pt-4">
+          <div className="flex justify-end gap-2 pt-4">
             <Button type="submit" disabled={mutation.isPending}>
               {mutation.isPending
                 ? "Menyimpan..."
                 : service
-                ? "Update"
+                ? "Perbarui"
                 : "Simpan"}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>

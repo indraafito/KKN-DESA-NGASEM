@@ -144,6 +144,16 @@ const VillageProfileForm = ({ profile, onCancel }: VillageProfileFormProps) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
+              <Label htmlFor="kepala_desa">Kepala Desa *</Label>
+              <Input
+                id="kepala_desa"
+                value={formData.kepala_desa}
+                onChange={(e) => handleChange("kepala_desa", e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
               <Label htmlFor="welcome_message">Pesan Selamat Datang</Label>
               <Input
                 id="welcome_message"
@@ -155,30 +165,26 @@ const VillageProfileForm = ({ profile, onCancel }: VillageProfileFormProps) => {
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="video_url">URL Video YouTube</Label>
-            <Input
-              id="video_url"
-              value={formData.video_url}
-              onChange={(e) => handleChange("video_url", e.target.value)}
-              placeholder="https://www.youtube.com/watch?v=..."
-            />
-            <p className="text-sm text-gray-500 mt-1">
-              Masukkan URL video YouTube untuk profil desa
-            </p>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="video_url">URL Video YouTube</Label>
+              <Input
+                id="video_url"
+                value={formData.video_url}
+                onChange={(e) => handleChange("video_url", e.target.value)}
+                placeholder="https://www.youtube.com/watch?v=..."
+              />
+            </div>
 
-          <div>
-            <Label htmlFor="maps_url">URL Google Maps</Label>
-            <Input
-              id="maps_url"
-              value={formData.maps_url}
-              onChange={(e) => handleChange("maps_url", e.target.value)}
-              placeholder="https://maps.google.com/?q=..."
-            />
-            <p className="text-sm text-gray-500 mt-1">
-              URL Google Maps untuk lokasi desa
-            </p>
+            <div>
+              <Label htmlFor="maps_url">URL Google Maps</Label>
+              <Input
+                id="maps_url"
+                value={formData.maps_url}
+                onChange={(e) => handleChange("maps_url", e.target.value)}
+                placeholder="https://maps.google.com/?q=..."
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -206,16 +212,6 @@ const VillageProfileForm = ({ profile, onCancel }: VillageProfileFormProps) => {
           </div>
 
           <div>
-            <Label htmlFor="kepala_desa">Kepala Desa *</Label>
-            <Input
-              id="kepala_desa"
-              value={formData.kepala_desa}
-              onChange={(e) => handleChange("kepala_desa", e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
             <ImageUploadField
               label="Foto Profil Desa"
               value={formData.photo_url}
@@ -224,9 +220,9 @@ const VillageProfileForm = ({ profile, onCancel }: VillageProfileFormProps) => {
             />
           </div>
 
-          <div className="flex gap-2 pt-4">
+          <div className="flex justify-end gap-2 pt-4">
             <Button type="submit" disabled={updateMutation.isPending}>
-              {updateMutation.isPending ? "Menyimpan..." : "Simpan"}
+              {updateMutation.isPending ? "Menyimpan..." : "Perbarui"}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               Batal
