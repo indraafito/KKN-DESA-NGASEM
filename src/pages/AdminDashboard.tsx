@@ -20,10 +20,6 @@ import {
   useVillageStatistics,
   useDeleteVillageStatistic,
 } from "@/hooks/useVillageStatistics";
-import {
-  useVillageAchievements,
-  useDeleteVillageAchievement,
-} from "@/hooks/useVillageAchievements";
 import ServiceApplicationsTable from "@/components/admin/ServiceApplicationsTable";
 import NewsForm from "@/components/admin/NewsForm";
 import VillageOfficialForm from "@/components/admin/VillageOfficialForm";
@@ -31,7 +27,6 @@ import FacilityForm from "@/components/admin/FacilityForm";
 import CommunityProgramForm from "@/components/admin/CommunityProgramForm";
 import KKNProgramForm from "@/components/admin/KKNProgramForm";
 import VillageStatisticForm from "@/components/admin/VillageStatisticForm";
-import VillageAchievementForm from "@/components/admin/VillageAchievementForm";
 import Modal from "@/components/admin/Modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -63,6 +58,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useVillageProfile } from "@/hooks/useVillageProfile";
+import { it } from "node:test";
 
 const AdminDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -97,7 +93,6 @@ const AdminDashboard = () => {
     { key: "programs", label: "Program", icon: Calendar },
     { key: "kkn", label: "KKN", icon: GraduationCap },
     { key: "statistics", label: "Statistik", icon: BarChart3 },
-    { key: "achievements", label: "Prestasi", icon: Trophy },
   ];
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -176,9 +171,6 @@ const AdminDashboard = () => {
       case "statistic":
         deleteStatistic.mutate(id);
         break;
-      case "achievement":
-        deleteAchievement.mutate(id);
-        break;
     }
 
     setShowDeleteModal(false);
@@ -200,7 +192,7 @@ const AdminDashboard = () => {
   // News
   const { data: news = [], isLoading: isNewsLoading } = useNews();
   const deleteNews = useDeleteNews();
-  const handleDeleteNews = (id, title) => {
+  const handleDeleteNews = (id : string, title : string) => {
     openDeleteModal(
       "news",
       id,
@@ -260,19 +252,6 @@ const AdminDashboard = () => {
       id,
       "Hapus Statistik",
       `Yakin ingin menghapus statistik "${label}"?`
-    );
-  };
-
-  // Village Achievements
-  const { data: achievements = [], isLoading: isAchievementsLoading } =
-    useVillageAchievements();
-  const deleteAchievement = useDeleteVillageAchievement();
-  const handleDeleteAchievement = (id, title) => {
-    openDeleteModal(
-      "achievement",
-      id,
-      "Hapus Prestasi",
-      `Yakin ingin menghapus prestasi "${title}"?`
     );
   };
 
@@ -698,7 +677,7 @@ const AdminDashboard = () => {
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => handleDeleteNews(news.id, item.title)}
+                              onClick={() => handleDeleteNews(item.id, item.title)}
                             >
                               <Trash2 className="w-4 h-4" />
                               Hapus
@@ -995,7 +974,7 @@ const AdminDashboard = () => {
                               size="sm"
                               variant="destructive"
                               onClick={() =>
-                                handleDeleteCommunityProgram(communityPrograms.id, program.title)
+                                handleDeleteCommunityProgram(program.id, program.title)
                               }
                               className="hover:bg-red-600"
                             >
@@ -1091,7 +1070,7 @@ const AdminDashboard = () => {
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => handleDeleteKKNProgram(kknPrograms.id, program.title)}
+                              onClick={() => handleDeleteKKNProgram(program.id, program.title)}
                               className="hover:bg-red-600"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -1189,107 +1168,6 @@ const AdminDashboard = () => {
                               className="hover:bg-red-600"
                             >
                               <Trash2 className="w-4 h-4 mr-2" />
-                              Hapus
-                            </Button>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-            {selectedMenu === "achievements" && (
-              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden">
-                <div className="bg-gradient-to-r from-yellow-500 to-orange-500 px-8 py-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                        <Trophy className="w-5 h-5 text-white" />
-                      </div>
-                      <h2 className="text-2xl font-bold text-white">
-                        Prestasi Desa
-                      </h2>
-                    </div>
-                    <Button
-                      onClick={() =>
-                        openModal(
-                          "Tambah Prestasi",
-                          <VillageAchievementForm
-                            onSubmit={handleSubmit}
-                            onCancel={closeModal}
-                          />
-                        )
-                      }
-                      className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Tambah Prestasi
-                    </Button>
-                  </div>
-                </div>
-                <div className="p-8">
-                  <div className="grid gap-4">
-                    {isAchievementsLoading ? (
-                      <div className="flex items-center justify-center py-12">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>
-                        <span className="ml-3 text-gray-600">
-                          Memuat data prestasi...
-                        </span>
-                      </div>
-                    ) : achievements.length === 0 ? (
-                      <div className="text-center py-12">
-                        <Trophy className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500 text-lg">
-                          Belum ada prestasi
-                        </p>
-                        <p className="text-gray-400 text-sm">
-                          Klik tombol "Tambah Prestasi" untuk menambahkan
-                          prestasi baru
-                        </p>
-                      </div>
-                    ) : (
-                      achievements.map((achievement) => (
-                        <div
-                          key={achievement.id}
-                          className="flex items-center justify-between bg-yellow-50 rounded-lg px-4 py-3 hover:bg-yellow-100 transition-colors"
-                        >
-                          <div className="flex-1">
-                            <div className="font-semibold text-gray-800">
-                              {achievement.title}
-                            </div>
-                            <div className="text-xs text-gray-600 mt-1">
-                              {achievement.description}
-                            </div>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() =>
-                                openModal(
-                                  "Edit Prestasi",
-                                  <VillageAchievementForm
-                                    achievement={achievement}
-                                    onSubmit={handleSubmit}
-                                    onCancel={closeModal}
-                                  />
-                                )
-                              }
-                              className="bg-blue-500 hover:bg-blue-600 text-white border border-blue-600"
-                            >
-                              <Pencil className="w-4 h-4" />
-                              Edit
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() =>
-                                handleDeleteAchievement(achievement.id)
-                              }
-                              className="hover:bg-red-600"
-                            >
-                              <Trash2 className="w-4 h-4" />
                               Hapus
                             </Button>
                           </div>

@@ -79,36 +79,35 @@ export type Database = {
       }
       facilities: {
         Row: {
-          condition: string | null
           created_at: string
           description: string | null
-          features: string[] | null
           icon: string | null
           id: string
           name: string
-          status: string | null
+          alamat: string | null
+          lokasi: string | null
           updated_at: string
         }
         Insert: {
           condition?: string | null
           created_at?: string
           description?: string | null
-          features?: string[] | null
           icon?: string | null
           id?: string
           name: string
-          status?: string | null
+          alamat?: string | null
+          lokasi?: string | null
           updated_at?: string
         }
         Update: {
           condition?: string | null
           created_at?: string
           description?: string | null
-          features?: string[] | null
           icon?: string | null
           id?: string
           name?: string
-          status?: string | null
+          alamat?: string | null
+          lokasi?: string | null
           updated_at?: string
         }
         Relationships: []

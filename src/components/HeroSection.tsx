@@ -2,7 +2,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
 import { useVillageProfile } from "@/hooks/useVillageProfile";
 import { useVillageStatistics } from "@/hooks/useVillageStatistics";
-import { useVillageAchievements } from "@/hooks/useVillageAchievements";
 import * as Icons from "lucide-react";
 import { useState } from "react";
 
@@ -13,10 +12,6 @@ const HeroSection = () => {
     error: profileError,
   } = useVillageProfile();
   const { data: statistics } = useVillageStatistics();
-  const { data: achievements } = useVillageAchievements();
-
-  const [showAllAchievements, setShowAllAchievements] = useState(false);
-  const achievementLimit = 6;
 
   const handleLocationClick = () => {
     const mapsUrl =
@@ -37,10 +32,6 @@ const HeroSection = () => {
     }
     return url;
   };
-
-  const displayedAchievements = showAllAchievements
-    ? achievements
-    : achievements?.slice(0, achievementLimit);
 
   // Mock data for village area information - replace with actual data from your API
   const areaInformation = {
@@ -187,75 +178,6 @@ const HeroSection = () => {
                   })}
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* Prestasi */}
-          {achievements && achievements.length > 0 && (
-            <div
-              className="mt-16 animate-fade-in"
-              style={{ animationDelay: "1s" }}
-            >
-              <Card className="max-w-6xl mx-auto bg-white/20 backdrop-blur-md shadow-xl border border-white/10 rounded-xl">
-                <CardContent className="p-8">
-                  <h2 className="text-2xl font-bold text-center mb-8 text-white">
-                    Prestasi Desa Ngasem
-                  </h2>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {displayedAchievements.map((achievement) => (
-                      <div
-                        key={achievement.id}
-                        className="bg-white/20 backdrop-blur-md rounded-lg p-6 group hover:bg-white/40 transition-all duration-300 border border-white/10"
-                      >
-                        {achievement.image_url && (
-                          <div className="mb-4 rounded-lg overflow-hidden">
-                            <img
-                              src={achievement.image_url}
-                              alt={achievement.title}
-                              className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                          </div>
-                        )}
-                        <h3 className="text-lg font-bold text-white mb-2">
-                          {achievement.title}
-                        </h3>
-                        {achievement.description && (
-                          <p className="text-white text-sm mb-2">
-                            {achievement.description}
-                          </p>
-                        )}
-                        {achievement.achievement_date && (
-                          <p className="text-white text-xs">
-                            {new Date(
-                              achievement.achievement_date
-                            ).toLocaleDateString("id-ID", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  {achievements.length > achievementLimit && (
-                    <div className="flex justify-end mt-6">
-                      <button
-                        onClick={() =>
-                          setShowAllAchievements(!showAllAchievements)
-                        }
-                        className="bg-white/20 hover:bg-white/40 text-white text-sm px-4 py-2 rounded transition-all duration-300 backdrop-blur-md border border-white/10"
-                      >
-                        {showAllAchievements
-                          ? "Tampilkan Lebih Sedikit"
-                          : "Lihat Selengkapnya"}
-                      </button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
             </div>
           )}
 

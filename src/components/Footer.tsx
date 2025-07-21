@@ -53,7 +53,7 @@ const Footer = () => {
 
         {/* Footer Bottom */}
         <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400 text-sm">
-          <p>&copy; 2025 KKN Desa Ngasem FMIPA UB 2025. Semua hak cipta dilindungi.</p>
+          <p>&copy; 2025 KKN FMIPA UB 2025 Desa Ngasem. Semua hak cipta dilindungi.</p>
           <p className="mt-2">Website Pemerintah Desa Ngasem</p>
         </div>
       </div>

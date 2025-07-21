@@ -4,33 +4,30 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
+import { X, Upload, ImageIcon } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-type KKNProgram = Tables<"kkn_programs">;
+type Proker = Tables<"proker">;
 
-interface KKNProgramFormProps {
-  program?: KKNProgram;
+interface ProkerFormProps {
+  proker?: Proker;
   onCancel: () => void;
-  onSuccess?: () => void; // untuk menutup modal atau refresh list
+  onSuccess?: () => void;
 }
 
-const KKNProgramForm = ({ program, onCancel, onSuccess }: KKNProgramFormProps) => {
+const ProkerForm = ({ proker, onCancel, onSuccess }: ProkerFormProps) => {
   const [formData, setFormData] = useState({
-    title: program?.title || "",
-    period: program?.period || "",
-    description: program?.description || "",
-    participants: program?.participants || 0,
-    status: program?.status || "active",
+    nama_proker: proker?.nama_proker || "",
+    deskripsi: proker?.deskripsi || "",
+    tanggal: proker?.tanggal || "",
   });
 
-  const [activities, setActivities] = useState<string[]>(program?.activities || []);
-  const [newActivity, setNewActivity] = useState("");
+  const [photos, setPhotos] = useState<string[]>(proker?.photos || []);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -38,28 +35,27 @@ const KKNProgramForm = ({ program, onCancel, onSuccess }: KKNProgramFormProps) =
     mutationFn: async () => {
       const payload = {
         ...formData,
-        activities,
-        participants: Number(formData.participants),
+        photos,
       };
 
-      if (program?.id) {
+      if (proker?.id) {
         const { error } = await supabase
-          .from("kkn_programs")
+          .from("proker")
           .update(payload)
-          .eq("id", program.id);
+          .eq("id", proker.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("kkn_programs").insert(payload);
+        const { error } = await supabase.from("proker").insert(payload);
         if (error) throw error;
       }
     },
     onSuccess: () => {
       toast({
         title: "Berhasil",
-        description: `Program KKN berhasil ${program ? "diperbarui" : "ditambahkan"}.`,
+        description: `Program Kerja berhasil ${proker ? "diperbarui" : "ditambahkan"}.`,
       });
-      queryClient.invalidateQueries({ queryKey: ["kkn-programs"] });
-      onSuccess?.(); // misalnya untuk menutup modal
+      queryClient.invalidateQueries({ queryKey: ["proker"] });
+      onSuccess?.();
     },
     onError: () => {
       toast({
@@ -74,15 +70,57 @@ const KKNProgramForm = ({ program, onCancel, onSuccess }: KKNProgramFormProps) =
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const addActivity = () => {
-    if (newActivity.trim() && !activities.includes(newActivity.trim())) {
-      setActivities([...activities, newActivity.trim()]);
-      setNewActivity("");
+  const uploadPhoto = async (file: File) => {
+    try {
+      setUploadingPhotos(true);
+      
+      // Generate unique filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+      const filePath = `proker-photos/${fileName}`;
+
+      // Upload file to Supabase storage
+      const { error: uploadError } = await supabase.storage
+        .from('village-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from('village-images')
+        .getPublicUrl(filePath);
+
+      setPhotos(prev => [...prev, data.publicUrl]);
+      
+      toast({
+        title: "Berhasil",
+        description: "Foto berhasil diupload.",
+      });
+    } catch (error) {
+      toast({
+        title: "Gagal",
+        description: "Gagal mengupload foto.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingPhotos(false);
     }
   };
 
-  const removeActivity = (activity: string) => {
-    setActivities(activities.filter((a) => a !== activity));
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      Array.from(files).forEach(file => {
+        if (file.type.startsWith('image/')) {
+          uploadPhoto(file);
+        }
+      });
+    }
+  };
+
+  const removePhoto = (photoUrl: string) => {
+    setPhotos(photos.filter(url => url !== photoUrl));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -93,97 +131,106 @@ const KKNProgramForm = ({ program, onCancel, onSuccess }: KKNProgramFormProps) =
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{program ? "Edit Program KKN" : "Tambah Program KKN"}</CardTitle>
+        <CardTitle>{proker ? "Edit Program Kerja" : "Tambah Program Kerja"}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="title">Judul Program</Label>
+            <Label htmlFor="nama_proker">Nama Program Kerja</Label>
             <Input
-              id="title"
-              value={formData.title}
-              onChange={(e) => handleChange("title", e.target.value)}
+              id="nama_proker"
+              value={formData.nama_proker}
+              onChange={(e) => handleChange("nama_proker", e.target.value)}
               required
+              placeholder="Contoh: Bersih-bersih Desa"
             />
           </div>
 
           <div>
-            <Label htmlFor="period">Periode</Label>
-            <Input
-              id="period"
-              value={formData.period}
-              onChange={(e) => handleChange("period", e.target.value)}
-              placeholder="Contoh: Juli - Agustus 2024"
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="participants">Jumlah Peserta</Label>
-            <Input
-              id="participants"
-              type="number"
-              value={formData.participants}
-              onChange={(e) => handleChange("participants", e.target.value)}
-              min="0"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="description">Deskripsi</Label>
+            <Label htmlFor="deskripsi">Deskripsi</Label>
             <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleChange("description", e.target.value)}
-              rows={3}
+              id="deskripsi"
+              value={formData.deskripsi}
+              onChange={(e) => handleChange("deskripsi", e.target.value)}
+              rows={4}
+              placeholder="Deskripsikan program kerja ini..."
+              required
             />
           </div>
 
           <div>
-            <Label htmlFor="status">Status</Label>
-            <Select
-              value={formData.status}
-              onValueChange={(value) => handleChange("status", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Pilih status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="active">Aktif</SelectItem>
-                <SelectItem value="inactive">Tidak Aktif</SelectItem>
-                <SelectItem value="completed">Selesai</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="tanggal">Tanggal Pelaksanaan</Label>
+            <Input
+              id="tanggal"
+              type="date"
+              value={formData.tanggal}
+              onChange={(e) => handleChange("tanggal", e.target.value)}
+              required
+            />
           </div>
 
           <div>
-            <Label>Kegiatan</Label>
-            <div className="flex gap-2 mb-2">
-              <Input
-                value={newActivity}
-                onChange={(e) => setNewActivity(e.target.value)}
-                placeholder="Tambah kegiatan..."
-                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addActivity())}
-              />
-              <Button type="button" onClick={addActivity}>
-                Tambah
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {activities.map((activity, index) => (
-                <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                  {activity}
-                  <X
-                    className="h-3 w-3 cursor-pointer"
-                    onClick={() => removeActivity(activity)}
-                  />
-                </Badge>
-              ))}
+            <Label>Foto Kegiatan</Label>
+            <div className="space-y-4">
+              {/* Upload Area */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="photo-upload"
+                  disabled={uploadingPhotos}
+                />
+                <label
+                  htmlFor="photo-upload"
+                  className="cursor-pointer flex flex-col items-center gap-2"
+                >
+                  <Upload className="h-8 w-8 text-gray-400" />
+                  <span className="text-sm text-gray-600">
+                    {uploadingPhotos ? "Mengupload..." : "Klik untuk upload foto atau drag & drop"}
+                  </span>
+                  <span className="text-xs text-gray-400">PNG, JPG, JPEG hingga 5MB</span>
+                </label>
+              </div>
+
+              {/* Photo Preview Grid */}
+              {photos.length > 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {photos.map((photoUrl, index) => (
+                    <div key={index} className="relative group">
+                      <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                        <img
+                          src={photoUrl}
+                          alt={`Foto ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removePhoto(photoUrl)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Photo Count */}
+              {photos.length > 0 && (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <ImageIcon className="h-4 w-4" />
+                  <span>{photos.length} foto ditambahkan</span>
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="flex gap-2">
-            <Button type="submit" disabled={mutation.isPending}>
+          <div className="flex gap-2 pt-4">
+            <Button type="submit" disabled={mutation.isPending || uploadingPhotos}>
               {mutation.isPending ? "Menyimpan..." : "Simpan"}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
@@ -196,4 +243,4 @@ const KKNProgramForm = ({ program, onCancel, onSuccess }: KKNProgramFormProps) =
   );
 };
 
-export default KKNProgramForm;
+export default ProkerForm;

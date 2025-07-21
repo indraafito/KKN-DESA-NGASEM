@@ -13,7 +13,7 @@ const FacilitiesSection = () => {
       </div>
 
       <div className="container mx-auto max-w-7xl relative z-10">
-        {/* Header section with enhanced styling */}
+        {/* Header section */}
         <div className="text-center mb-20">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full mb-6 shadow-lg">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -28,7 +28,7 @@ const FacilitiesSection = () => {
           </p>
         </div>
 
-        {/* Loading state with skeleton */}
+        {/* Loading state */}
         {isLoading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[...Array(6)].map((_, index) => (
@@ -59,16 +59,14 @@ const FacilitiesSection = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {facilities.map((facility, index) => (
-              <div 
-                key={facility.id || index} 
+              <div
+                key={facility.id || index}
                 className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100 overflow-hidden relative"
               >
-                {/* Gradient overlay on hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
+
                 <div className="p-8 relative z-10">
                   <div className="text-center mb-6">
-                    {/* Enhanced icon container */}
                     <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
                       {facility.icon ? (
                         <div className="text-3xl">{facility.icon}</div>
@@ -78,47 +76,32 @@ const FacilitiesSection = () => {
                         </svg>
                       )}
                     </div>
-                    
+
                     <h3 className="text-xl font-bold text-gray-800 mb-3 group-hover:text-green-700 transition-colors duration-300">
                       {facility.name}
                     </h3>
                   </div>
 
-                  <p className="text-gray-600 text-center mb-6 leading-relaxed">
+                  <p className="text-gray-600 text-center mb-4 leading-relaxed">
                     {facility.description}
                   </p>
 
-                  {/* Enhanced features list */}
-                  {facility.features && (
-                    <div className="mt-6 pt-6 border-t border-gray-100">
-                      <h4 className="font-semibold text-gray-800 text-sm mb-3 flex items-center">
-                        <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                        </svg>
-                        Fasilitas Tersedia
-                      </h4>
-                      <ul className="space-y-2">
-                        {(Array.isArray(facility.features)
-                          ? facility.features
-                          : typeof facility.features === 'string'
-                            ? (facility.features as string).split(',')
-                            : []
-                        ).map((feature: string, idx: number) => (
-                          <li key={idx} className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors duration-200">
-                            <div className="flex-shrink-0 w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                              <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
-                            </div>
-                            <span className="flex-1">{feature.trim()}</span>
-                          </li>
-                        ))}
-                      </ul>
+                  {facility.alamat && facility.lokasi && (
+                    <div className="flex items-center justify-center gap-2 text-green-700 font-medium text-sm mt-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm0 10s6-5.686 6-10a6 6 0 10-12 0c0 4.314 6 10 6 10z" />
+                      </svg>
+                      <a
+                        href={facility.lokasi}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline"
+                      >
+                        {facility.alamat}
+                      </a>
                     </div>
                   )}
                 </div>
-
-
               </div>
             ))}
           </div>

@@ -26,10 +26,9 @@ CREATE TABLE public.community_programs (
 CREATE TABLE public.facilities (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
-  features TEXT[], -- Array of features
-  condition TEXT DEFAULT 'Baik', -- Baik, Cukup, Perlu Perbaikan
   icon TEXT, -- Emoji or icon identifier
-  status TEXT DEFAULT 'active',
+  alamat TEXT,
+  lokasi TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
