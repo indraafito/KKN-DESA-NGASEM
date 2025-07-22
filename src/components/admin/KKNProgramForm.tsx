@@ -217,7 +217,6 @@ const KKNProgramForm = ({
               rows={4}
               placeholder="Jelaskan secara rinci..."
               required
-              maxLength={1000}
             />
           </div>
 
