@@ -570,7 +570,7 @@ const InfoSection = () => {
                               ))}
                             </ul>
                           ) : (
-                            <p className="text-gray-600 leading-relaxed">
+                            <p className="text-gray-600 leading-relaxed text-justify indent-6">
                               {program.deskripsi}
                             </p>
                           )}
