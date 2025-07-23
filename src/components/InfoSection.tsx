@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useKKNPrograms } from "@/hooks/useKKNPrograms";
 import { useCommunityPrograms } from "@/hooks/useCommunityPrograms";
 import { useState } from "react";
+import { MapPin, Eye, Calendar, X } from "lucide-react";
 
 const InfoSection = () => {
   const { data: kknPrograms = [], isLoading: isKKNLoading } = useKKNPrograms();
@@ -14,6 +15,16 @@ const InfoSection = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showUMKMCatalog, setShowUMKMCatalog] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState({});
+  const [selectedProgram, setSelectedProgram] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUMKMMapOpen, setIsUMKMMapOpen] = useState(false);
+
+  const openUMKMMap = () => setIsUMKMMapOpen(true);
+  const closeUMKMMap = () => setIsUMKMMapOpen(false);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProgram(null);
+  };
 
   const nextPhoto = (programId, totalPhotos) => {
     setCurrentPhotoIndex((prev) => ({
@@ -49,6 +60,11 @@ const InfoSection = () => {
   const openUMKMCatalog = () => {
     setShowUMKMCatalog(true);
     setTotalPages(10);
+  };
+
+  const handleDetailClick = (program) => {
+    setSelectedProgram(program);
+    setIsModalOpen(true);
   };
 
   return (
@@ -286,6 +302,13 @@ const InfoSection = () => {
                 </svg>
                 Buka Katalog UMKM
               </Button>
+              <Button
+                onClick={openUMKMMap}
+                className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white py-4 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 mt-5"
+              >
+                <MapPin className="w-5 h-5 mr-2" />
+                Peta Persebaran UMKM
+              </Button>
             </div>
           </div>
         </div>
@@ -480,17 +503,17 @@ const InfoSection = () => {
                     {/* Content Section */}
                     <div className="p-8">
                       {/* Nama Proker */}
-                      <h4 className="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-300 mb-4">
+                      <h4 className="text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-300 mb-4">
                         {program.nama_proker}
                       </h4>
 
                       {/* Info Cards */}
-                      <div className="space-y-3 mb-6">
+                      <div className="space-y-2 mb-4">
                         {/* Tanggal */}
                         {program.tanggal && (
-                          <div className="flex items-center text-gray-600 bg-blue-50 px-4 py-3 rounded-xl">
+                          <div className="flex items-center text-gray-600 bg-blue-50 px-3 py-2 rounded-lg text-sm">
                             <svg
-                              className="w-5 h-5 mr-3 text-blue-500"
+                              className="w-4 h-4 mr-2 text-blue-500"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -502,8 +525,7 @@ const InfoSection = () => {
                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                               />
                             </svg>
-                            <span className="font-semibold">Tanggal:</span>
-                            <span className="ml-2 text-blue-600 font-medium">
+                            <span className="ml-1 text-blue-600 font-medium">
                               {program.tanggal}
                             </span>
                           </div>
@@ -511,9 +533,9 @@ const InfoSection = () => {
 
                         {/* Lokasi */}
                         {program.lokasi && (
-                          <div className="flex items-center text-gray-600 bg-green-50 px-4 py-3 rounded-xl">
+                          <div className="flex items-center text-gray-600 bg-green-50 px-3 py-2 rounded-lg text-sm">
                             <svg
-                              className="w-5 h-5 mr-3 text-green-500"
+                              className="w-4 h-4 mr-2 text-green-500"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -531,8 +553,7 @@ const InfoSection = () => {
                                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                               />
                             </svg>
-                            <span className="font-semibold">Lokasi:</span>
-                            <span className="ml-2 text-green-600 font-medium">
+                            <span className="ml-1 text-green-600 font-medium">
                               {program.lokasi}
                             </span>
                           </div>
@@ -542,22 +563,6 @@ const InfoSection = () => {
                       {/* Deskripsi */}
                       {program.deskripsi && (
                         <div className="mb-6">
-                          <h5 className="font-semibold text-gray-800 mb-3 flex items-center">
-                            <svg
-                              className="w-5 h-5 mr-2 text-blue-500"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                              />
-                            </svg>
-                            Deskripsi Kegiatan:
-                          </h5>
                           {Array.isArray(program.deskripsi) ? (
                             <ul className="text-gray-600 space-y-2">
                               {program.deskripsi.map((desc, idx) => (
@@ -571,11 +576,21 @@ const InfoSection = () => {
                             </ul>
                           ) : (
                             <p className="text-gray-600 leading-relaxed text-justify indent-6">
-                              {program.deskripsi}
+                              {program.deskripsi.length > 200
+                                ? `${program.deskripsi.slice(0, 200)}...`
+                                : program.deskripsi}
                             </p>
                           )}
                         </div>
                       )}
+                      {/* Tombol Aksi */}
+                      <button
+                        onClick={() => handleDetailClick(program)}
+                        className="w-full flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors duration-300 text-sm font-medium shadow-md"
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Lihat Detail
+                      </button>
                     </div>
                   </div>
                 );
@@ -655,6 +670,183 @@ const InfoSection = () => {
                   )}
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {isModalOpen && selectedProgram && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative animate-fadeIn">
+            {/* Close Button */}
+            <button
+              onClick={closeModal}
+              className="absolute top-3 right-3 w-9 h-9 bg-white/90 hover:bg-white text-gray-800 hover:text-red-600 rounded-full flex items-center justify-center transition-all duration-300 z-[999]"
+              title="Tutup"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Photo Section */}
+            {selectedProgram.photos && selectedProgram.photos.length > 0 && (
+              <div className="mb-6 mt-7">
+                <div className="relative h-48 rounded-xl overflow-hidden">
+                  <img
+                    src={
+                      selectedProgram.photos[
+                        currentPhotoIndex[selectedProgram.id] || 0
+                      ]
+                    }
+                    alt={`${selectedProgram.nama_proker} - Foto ${
+                      (currentPhotoIndex[selectedProgram.id] || 0) + 1
+                    }`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/placeholder-image.jpg";
+                    }}
+                  />
+
+                  {/* Navigation Arrows untuk modal */}
+                  {selectedProgram.photos.length > 1 && (
+                    <>
+                      <button
+                        onClick={() =>
+                          prevPhoto(
+                            selectedProgram.id,
+                            selectedProgram.photos.length
+                          )
+                        }
+                        className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/90 hover:bg-white text-gray-800 rounded-full flex items-center justify-center shadow-lg transition-all duration-300"
+                      >
+                        <svg
+                          className="w-3 h-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() =>
+                          nextPhoto(
+                            selectedProgram.id,
+                            selectedProgram.photos.length
+                          )
+                        }
+                        className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/90 hover:bg-white text-gray-800 rounded-full flex items-center justify-center shadow-lg transition-all duration-300"
+                      >
+                        <svg
+                          className="w-3 h-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
+
+                      {/* Photo Indicators */}
+                      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1">
+                        {selectedProgram.photos.map((_, photoIndex) => (
+                          <button
+                            key={photoIndex}
+                            onClick={() =>
+                              setCurrentPhotoIndex((prev) => ({
+                                ...prev,
+                                [selectedProgram.id]: photoIndex,
+                              }))
+                            }
+                            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                              photoIndex ===
+                              (currentPhotoIndex[selectedProgram.id] || 0)
+                                ? "bg-white w-3"
+                                : "bg-white/60 hover:bg-white/80"
+                            }`}
+                          />
+                        ))}
+                      </div>
+
+                      {/* Photo Counter */}
+                      <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
+                        {(currentPhotoIndex[selectedProgram.id] || 0) + 1} /{" "}
+                        {selectedProgram.photos.length}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Modal Content */}
+            <h2 className="text-2xl font-bold text-blue-700 mb-4">
+              {selectedProgram.nama_proker}
+            </h2>
+
+            {/* Tanggal */}
+            {selectedProgram.tanggal && (
+              <p className="text-sm text-gray-600 mb-1 flex items-center">
+                <Calendar className="w-4 h-4 mr-2 text-blue-500" />
+                <span className="font-medium">{selectedProgram.tanggal}</span>
+              </p>
+            )}
+
+            {/* Lokasi */}
+            {selectedProgram.lokasi && (
+              <p className="text-sm text-gray-600 mb-3 flex items-center">
+                <MapPin className="w-4 h-4 mr-2 text-green-500" />
+                <span className="font-medium">{selectedProgram.lokasi}</span>
+              </p>
+            )}
+
+            {selectedProgram.deskripsi && (
+              <div className="text-gray-700 leading-relaxed text-justify max-h-60 overflow-y-auto pr-2">
+                {Array.isArray(selectedProgram.deskripsi) ? (
+                  <ul className="list-disc pl-5 space-y-1">
+                    {selectedProgram.deskripsi.map((desc, idx) => (
+                      <li key={idx}>{desc}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>{selectedProgram.deskripsi}</p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      {isUMKMMapOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 max-w-3xl w-full max-h-[90vh] overflow-auto relative animate-fadeIn shadow-2xl">
+            {/* Tombol Close */}
+            <button
+              onClick={closeUMKMMap}
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-600 transition"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Judul */}
+            <h2 className="text-2xl font-bold text-center mb-4">
+              Peta Persebaran UMKM
+            </h2>
+
+            {/* Gambar */}
+            <div className="max-h-[70vh] overflow-y-auto rounded-lg shadow-md">
+              <img
+                src="/petaumkm.png"
+                alt="Peta Persebaran UMKM"
+                className="w-full h-auto"
+              />
             </div>
           </div>
         </div>
