@@ -31,7 +31,7 @@ const KKNProgramForm = ({
     nama_proker: program?.nama_proker || "",
     deskripsi: program?.deskripsi || "",
     tanggal: program?.tanggal || "",
-    tanggalselesai: program?.tanggal_selesai || "",
+    tanggalselesai: program?.tanggalselesai || "",
     lokasi: program?.lokasi || "",
   });
 

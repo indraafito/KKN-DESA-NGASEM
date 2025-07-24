@@ -1,4 +1,4 @@
- import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useNews } from "@/hooks/useNews";
 import { Calendar, Tag, ArrowLeft, TrendingUp, Clock, User, Eye, Share2 } from "lucide-react";
 import { useState, useEffect } from "react";

@@ -14,6 +14,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import ReadMoreNews from "../src/components/Readmorenews";
 import NewsSection from "./components/NewsSection";
+import Kkndetail from "./components/kkndetail";
+
 
 const queryClient = new QueryClient();
 
@@ -38,9 +40,7 @@ const App: React.FC = () => {
               />
               <Route path="/news" element={<NewsSection/>} />
               <Route path="/Readmorenews/:id" element={<ReadMoreNews/>} />
-
-
-              {/* Jangan taruh route baru di bawah ini */}
+              <Route path="/kkndetail/:id" element={<Kkndetail />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

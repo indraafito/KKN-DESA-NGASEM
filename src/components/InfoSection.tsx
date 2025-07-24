@@ -3,6 +3,8 @@ import { useKKNPrograms } from "@/hooks/useKKNPrograms";
 import { useCommunityPrograms } from "@/hooks/useCommunityPrograms";
 import { useState } from "react";
 import { MapPin, Eye, Calendar, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 
 const InfoSection = () => {
   const { data: kknPrograms = [], isLoading: isKKNLoading } = useKKNPrograms();
@@ -18,13 +20,10 @@ const InfoSection = () => {
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUMKMMapOpen, setIsUMKMMapOpen] = useState(false);
+  const navigate = useNavigate();
 
   const openUMKMMap = () => setIsUMKMMapOpen(true);
   const closeUMKMMap = () => setIsUMKMMapOpen(false);
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedProgram(null);
-  };
 
   const nextPhoto = (programId, totalPhotos) => {
     setCurrentPhotoIndex((prev) => ({
@@ -51,9 +50,8 @@ const InfoSection = () => {
   };
 
   const handleDetailClick = (program) => {
-    setSelectedProgram(program);
-    setIsModalOpen(true);
-  };
+  navigate(`/kkndetail/${program.id}`);
+};
 
   return (
     <section className="relative py-24 px-4 bg-gradient-to-br from-slate-50 via-blue-50/20 to-green-50/30 overflow-hidden">
@@ -665,10 +663,9 @@ const InfoSection = () => {
           </div>
         </div>
       )}
-      {isModalOpen && selectedProgram && (
+      {/* {isModalOpen && selectedProgram && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative animate-fadeIn">
-            {/* Close Button */}
             <button
               onClick={closeModal}
               className="absolute top-3 right-3 w-9 h-9 bg-white/90 hover:bg-white text-gray-800 hover:text-red-600 rounded-full flex items-center justify-center transition-all duration-300 z-[999]"
@@ -677,7 +674,6 @@ const InfoSection = () => {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Photo Section */}
             {selectedProgram.photos && selectedProgram.photos.length > 0 && (
               <div className="mb-6 mt-7">
                 <div className="relative h-48 rounded-xl overflow-hidden">
@@ -696,7 +692,6 @@ const InfoSection = () => {
                     }}
                   />
 
-                  {/* Navigation Arrows untuk modal */}
                   {selectedProgram.photos.length > 1 && (
                     <>
                       <button
@@ -746,7 +741,6 @@ const InfoSection = () => {
                         </svg>
                       </button>
 
-                      {/* Photo Indicators */}
                       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1">
                         {selectedProgram.photos.map((_, photoIndex) => (
                           <button
@@ -767,7 +761,6 @@ const InfoSection = () => {
                         ))}
                       </div>
 
-                      {/* Photo Counter */}
                       <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
                         {(currentPhotoIndex[selectedProgram.id] || 0) + 1} /{" "}
                         {selectedProgram.photos.length}
@@ -778,12 +771,10 @@ const InfoSection = () => {
               </div>
             )}
 
-            {/* Modal Content */}
             <h2 className="text-2xl font-bold text-blue-700 mb-4">
               {selectedProgram.nama_proker}
             </h2>
 
-            {/* Tanggal */}
             {selectedProgram.tanggal && (
               <p className="text-sm text-gray-600 mb-1 flex items-center">
                 <Calendar className="w-4 h-4 mr-2 text-blue-500" />
@@ -791,7 +782,6 @@ const InfoSection = () => {
               </p>
             )}
 
-            {/* Lokasi */}
             {selectedProgram.lokasi && (
               <p className="text-sm text-gray-600 mb-3 flex items-center">
                 <MapPin className="w-4 h-4 mr-2 text-green-500" />
@@ -814,7 +804,7 @@ const InfoSection = () => {
             )}
           </div>
         </div>
-      )}
+      )} */}
       {isUMKMMapOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-6 max-w-3xl w-full max-h-[90vh] overflow-auto relative animate-fadeIn shadow-2xl">
