@@ -1,6 +1,15 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useNews } from "@/hooks/useNews";
-import { Calendar, Tag, ArrowLeft, TrendingUp, Clock, User, Eye, Share2 } from "lucide-react";
+import {
+  Calendar,
+  Tag,
+  ArrowLeft,
+  TrendingUp,
+  Clock,
+  User,
+  Eye,
+  Share2,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 
 const ReadMoreNewsDetail = () => {
@@ -15,7 +24,7 @@ const ReadMoreNewsDetail = () => {
   useEffect(() => {
     if (article?.content) {
       const wordsPerMinute = 200;
-      const wordCount = article.content.split(' ').length;
+      const wordCount = article.content.split(" ").length;
       const time = Math.ceil(wordCount / wordsPerMinute);
       setReadingTime(time);
     }
@@ -26,7 +35,7 @@ const ReadMoreNewsDetail = () => {
     if (window.history.length > 1) {
       navigate(-1);
     } else {
-      navigate('/news'); // Fallback route - adjust to your news list route
+      navigate("/news"); // Fallback route - adjust to your news list route
     }
   };
 
@@ -45,7 +54,7 @@ const ReadMoreNewsDetail = () => {
     } else {
       // Fallback to clipboard for unsupported browsers
       navigator.clipboard.writeText(window.location.href);
-      alert('Link berhasil disalin ke clipboard!');
+      alert("Link berhasil disalin ke clipboard!");
     }
   };
 
@@ -77,9 +86,12 @@ const ReadMoreNewsDetail = () => {
           <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
             <Tag className="w-12 h-12 text-gray-400" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Berita tidak ditemukan</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Berita tidak ditemukan
+          </h2>
           <p className="text-gray-500 mb-6">
-            Artikel dengan ID "{id}" tidak dapat ditemukan atau mungkin telah dihapus.
+            Artikel dengan ID "{id}" tidak dapat ditemukan atau mungkin telah
+            dihapus.
           </p>
           <button
             onClick={handleGoBack}
@@ -104,7 +116,7 @@ const ReadMoreNewsDetail = () => {
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
           Kembali
         </button>
-        
+
         <button
           onClick={handleShare}
           className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
@@ -133,31 +145,31 @@ const ReadMoreNewsDetail = () => {
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
             {article.title}
           </h1>
-          
+
           {/* Meta Information */}
           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
             <span className="inline-flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full">
               <Calendar className="w-4 h-4" />
               {new Date(article.created_at).toLocaleDateString("id-ID", {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
               })}
             </span>
-            
+
             <span className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
               <Tag className="w-4 h-4" />
               {article.category}
             </span>
-            
+
             {article.priority && (
               <span className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-3 py-1 rounded-full">
                 <TrendingUp className="w-4 h-4" />
                 {article.priority}
               </span>
             )}
-            
+
             {readingTime > 0 && (
               <span className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full">
                 <Clock className="w-4 h-4" />
@@ -169,8 +181,15 @@ const ReadMoreNewsDetail = () => {
 
         {/* Article Body */}
         <div className="prose prose-lg max-w-none">
-          <div className="text-gray-800 leading-relaxed text-lg whitespace-pre-line">
-            {article.content}
+          <div className="text-gray-800 leading-relaxed text-justify text-lg space-y-4">
+            {article.content
+              .split("\n")
+              .filter((paragraph) => paragraph.trim() !== "")
+              .map((paragraph, index) => (
+                <p key={index} className="indent-6 whitespace-pre-wrap">
+                  {paragraph}
+                </p>
+              ))}
           </div>
         </div>
       </article>
@@ -178,7 +197,7 @@ const ReadMoreNewsDetail = () => {
       {/* Back to Top Button */}
       <div className="text-center pt-8">
         <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
         >
           Kembali ke atas

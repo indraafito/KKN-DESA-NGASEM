@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useKKNPrograms } from "@/hooks/useKKNPrograms";
-import { ArrowLeft, Share2, Calendar, MapPin } from 'lucide-react';
+import { ArrowLeft, Share2, Calendar, MapPin } from "lucide-react";
 
 const KknDetail = () => {
   const { id } = useParams(); // ID dari URL
@@ -10,19 +10,24 @@ const KknDetail = () => {
 
   const selectedProgram = programs.find((program) => program.id === id);
 
-  const [currentPhotoIndex, setCurrentPhotoIndex] = useState<{ [key: string]: number }>({});
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState<{
+    [key: string]: number;
+  }>({});
 
   const nextPhoto = (programId: string, totalPhotos: number) => {
-    setCurrentPhotoIndex(prev => ({
+    setCurrentPhotoIndex((prev) => ({
       ...prev,
       [programId]: ((prev[programId] ?? 0) + 1) % totalPhotos,
     }));
   };
 
   const prevPhoto = (programId: string, totalPhotos: number) => {
-    setCurrentPhotoIndex(prev => ({
+    setCurrentPhotoIndex((prev) => ({
       ...prev,
-      [programId]: (prev[programId] ?? 0) === 0 ? totalPhotos - 1 : (prev[programId] ?? 0) - 1,
+      [programId]:
+        (prev[programId] ?? 0) === 0
+          ? totalPhotos - 1
+          : (prev[programId] ?? 0) - 1,
     }));
   };
 
@@ -38,12 +43,18 @@ const KknDetail = () => {
       });
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert('Link berhasil disalin ke clipboard!');
+      alert("Link berhasil disalin ke clipboard!");
     }
   };
 
-  if (isLoading) return <div className="p-8 text-center text-gray-500">Memuat data...</div>;
-  if (!selectedProgram) return <div className="p-8 text-center text-red-500">Program tidak ditemukan.</div>;
+  if (isLoading)
+    return <div className="p-8 text-center text-gray-500">Memuat data...</div>;
+  if (!selectedProgram)
+    return (
+      <div className="p-8 text-center text-red-500">
+        Program tidak ditemukan.
+      </div>
+    );
 
   const currentIndex = currentPhotoIndex[selectedProgram.id] ?? 0;
 
@@ -59,7 +70,7 @@ const KknDetail = () => {
             <ArrowLeft className="w-5 h-5" />
             <span className="font-medium">Kembali</span>
           </button>
-          
+
           <button
             onClick={handleShare}
             className="flex items-center space-x-2 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg transition-colors"
@@ -78,7 +89,9 @@ const KknDetail = () => {
             <div className="relative h-1/2 md:h-128">
               <img
                 src={selectedProgram.photos[currentIndex]}
-                alt={`${selectedProgram.nama_proker} - Foto ${currentIndex + 1}`}
+                alt={`${selectedProgram.nama_proker} - Foto ${
+                  currentIndex + 1
+                }`}
                 className="w-full h-full object-cover rounded-2xl"
                 onError={(e) => {
                   e.currentTarget.src = "/placeholder-image.jpg";
@@ -89,20 +102,50 @@ const KknDetail = () => {
               {selectedProgram.photos.length > 1 && (
                 <>
                   <button
-                    onClick={() => prevPhoto(selectedProgram.id, selectedProgram.photos.length)}
+                    onClick={() =>
+                      prevPhoto(
+                        selectedProgram.id,
+                        selectedProgram.photos.length
+                      )
+                    }
                     className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white text-gray-800 rounded-full flex items-center justify-center shadow-lg"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
                     </svg>
                   </button>
 
                   <button
-                    onClick={() => nextPhoto(selectedProgram.id, selectedProgram.photos.length)}
+                    onClick={() =>
+                      nextPhoto(
+                        selectedProgram.id,
+                        selectedProgram.photos.length
+                      )
+                    }
                     className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white text-gray-800 rounded-full flex items-center justify-center shadow-lg"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </button>
 
@@ -112,13 +155,15 @@ const KknDetail = () => {
                       <button
                         key={i}
                         onClick={() =>
-                          setCurrentPhotoIndex(prev => ({
+                          setCurrentPhotoIndex((prev) => ({
                             ...prev,
                             [selectedProgram.id]: i,
                           }))
                         }
                         className={`w-2 h-2 rounded-full ${
-                          i === currentIndex ? "bg-white w-6" : "bg-white/60 hover:bg-white/80"
+                          i === currentIndex
+                            ? "bg-white w-6"
+                            : "bg-white/60 hover:bg-white/80"
                         } transition-all`}
                       />
                     ))}
@@ -155,15 +200,29 @@ const KknDetail = () => {
             </div>
 
             {selectedProgram.deskripsi && (
-              <div className="text-gray-700 leading-relaxed text-justify whitespace-pre-line">
+              <div className="text-gray-700 leading-relaxed text-justify">
                 {Array.isArray(selectedProgram.deskripsi) ? (
                   <ul className="list-disc pl-6 space-y-2">
                     {selectedProgram.deskripsi.map((desc, i) => (
-                      <li key={i} className="text-lg">{desc}</li>
+                      <li key={i} className="text-lg">
+                        {desc}
+                      </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-lg">{selectedProgram.deskripsi}</p>
+                  <div className="space-y-4">
+                    {selectedProgram.deskripsi
+                      .split("\n")
+                      .filter((paragraph) => paragraph.trim() !== "")
+                      .map((paragraph, i) => (
+                        <p
+                          key={i}
+                          className="text-lg indent-6 whitespace-pre-wrap"
+                        >
+                          {paragraph}
+                        </p>
+                      ))}
+                  </div>
                 )}
               </div>
             )}
