@@ -12,6 +12,7 @@ import {
 } from "@/hooks/useKKNPrograms";
 import { Tables } from "@/integrations/supabase/types";
 import { supabase } from "@/integrations/supabase/client";
+import { Tangent } from "lucide-react";
 
 type KKNProgram = Tables<"kkn_programs">;
 
@@ -30,6 +31,7 @@ const KKNProgramForm = ({
     nama_proker: program?.nama_proker || "",
     deskripsi: program?.deskripsi || "",
     tanggal: program?.tanggal || "",
+    tanggalselesai: program?.tanggal_selesai || "",
     lokasi: program?.lokasi || "",
   });
 
@@ -221,12 +223,20 @@ const KKNProgramForm = ({
           </div>
 
           <div>
-            <Label htmlFor="tanggal">Tanggal *</Label>
+            <Label htmlFor="tanggal">Tanggal mulai*</Label>
             <Input
               id="tanggal"
               type="date"
               value={formData.tanggal}
               onChange={(e) => handleChange("tanggal", e.target.value)}
+              required
+            />
+            <label htmlFor="tanggalselesai">Tanggal selesai</label>
+            <Input
+              id="tanggalselesai"
+              type="date"
+              value={formData.tanggalselesai}
+              onChange={(e) => handleChange("tanggalselesai", e.target.value)}
               required
             />
           </div>

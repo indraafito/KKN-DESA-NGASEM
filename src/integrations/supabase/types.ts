@@ -157,6 +157,7 @@ export type Database = {
           nama_proker: string
           deskripsi: string
           tanggal: string
+          tanggalselesai: string | null
           lokasi: string
           photos: string[] | null
           created_at: string
@@ -166,6 +167,7 @@ export type Database = {
           nama_proker: string
           deskripsi: string
           tanggal: string
+          tanggalselesai?: string | null
           lokasi: string
           photos?: string[] | null
           created_at?: string
@@ -175,6 +177,7 @@ export type Database = {
           nama_proker?: string
           deskripsi?: string
           tanggal?: string
+          tanggalselesai?: string | null
           lokasi?: string
           photos?: string[] | null
           created_at?: string

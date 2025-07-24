@@ -40,18 +40,6 @@ const InfoSection = () => {
     }));
   };
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
   const closePDFViewer = () => {
     setShowUMKMCatalog(false);
     setCurrentPage(1);
@@ -527,6 +515,9 @@ const InfoSection = () => {
                             </svg>
                             <span className="ml-1 text-blue-600 font-medium">
                               {program.tanggal}
+                              {program.tanggalselesai
+                                ? ` s.d. ${program.tanggalselesai}`
+                                : ""}
                             </span>
                           </div>
                         )}
