@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = (username: string, password: string): boolean => {
-    if (username === 'admin' && password === 'admin') {
+    if (username === 'desangasem' && password === 'majumakmur') {
       setIsAuthenticated(true);
       localStorage.setItem('isAdminLoggedIn', 'true');
       localStorage.setItem('adminLoginTime', new Date().getTime().toString());
