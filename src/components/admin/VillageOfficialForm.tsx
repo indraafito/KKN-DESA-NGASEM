@@ -212,7 +212,7 @@ const VillageOfficialForm = ({
           <ImageUploadField
             label="Foto Berita"
             value={formData.photo_url}
-            onChange={(url) => handleChange("image_url", url)}
+            onChange={(url) => handleChange("photo_url", url)}
             folder="news"
           />
 
